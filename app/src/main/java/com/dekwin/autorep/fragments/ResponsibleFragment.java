@@ -93,7 +93,7 @@ public class ResponsibleFragment extends Fragment {
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 final LayoutInflater inflater = getActivity().getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.responsible_dialog, null);
+                View dialogView = inflater.inflate(R.layout.responsible_add, null);
                 builder.setView(dialogView);
 
                 builder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
@@ -101,8 +101,8 @@ public class ResponsibleFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
-                        EditText name = (EditText) ((Dialog) dialog).findViewById(R.id.responsible_dialog_name);
-                        EditText surname = (EditText) ((Dialog) dialog).findViewById(R.id.responsible_dialog_surname);
+                        EditText name = (EditText) ((Dialog) dialog).findViewById(R.id.responsible_add_name);
+                        EditText surname = (EditText) ((Dialog) dialog).findViewById(R.id.responsible_add_surname);
                         //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
                         ContentValues cv = new ContentValues();
                         cv.put(DatabaseHelper.RESPONSIBLE_COLUMN_NAME, name.getText().toString());
@@ -138,8 +138,8 @@ public class ResponsibleFragment extends Fragment {
                         DatabaseHelper.deleteResponsible(DatabaseHelper.RESPONSIBLE_COLUMN_ID + "=" + responsibleId, null);
                     }
                 });
-                ((EditText) dialogView.findViewById(R.id.responsible_dialog_name)).setText(cursor.getName());
-                ((EditText) dialogView.findViewById(R.id.responsible_dialog_surname)).setText(cursor.getSurname());
+                ((EditText) dialogView.findViewById(R.id.responsible_add_name)).setText(cursor.getName());
+                ((EditText) dialogView.findViewById(R.id.responsible_add_surname)).setText(cursor.getSurname());
                 builder.show();
                 return true;
             }

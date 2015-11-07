@@ -1,41 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="horizontal">
+android:layout_width="match_parent" android:layout_height="match_parent"
+android:orientation="vertical"
+android:padding="10dp">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="192dp"
-        android:layout_height="match_parent">
+<GridLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:columnCount="2"
+    android:rowCount="3"
+    android:useDefaultMargins="false"
+    android:transitionGroup="false"
+    android:touchscreenBlocksFocus="false">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Название"
-            android:id="@+id/textView" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Название:"
+        android:id="@+id/textView3"
+        android:layout_row="0"
+        android:layout_column="0" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Цена"
-            android:id="@+id/textView2" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/editText_spares_name"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:singleLine="false"
+        android:hint="введите название..." />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText_spares_name" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Цена:"
+        android:id="@+id/textView4"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:singleLine="false" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText_spares_price" />
-    </LinearLayout>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText_spares_price"
+        android:layout_row="1"
+        android:layout_column="1"
+        android:inputType="number"
+        android:hint="введите цену..." />
+</GridLayout>
 </LinearLayout>
