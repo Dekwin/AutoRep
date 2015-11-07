@@ -7,7 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +23,9 @@ import android.widget.Toast;
 
 import com.dekwin.autorep.R;
 import com.dekwin.autorep.adapters.ResponsibleAdapter;
-import com.dekwin.autorep.adapters.SparesAdapter;
 import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Responsible;
-import com.dekwin.autorep.entities.Spare;
+
 
 import java.util.ArrayList;
 
@@ -46,6 +49,33 @@ public class ResponsibleFragment extends Fragment {
 
         return rootView;
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.responsible, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.responsible_add) {
+            setAddResponsible(getActivity()).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
     public void showResponsible(final Context ctx){
         responsibleList = DatabaseHelper.selectResponsible(null);
@@ -105,7 +135,7 @@ public class ResponsibleFragment extends Fragment {
                                 "Deleted. id: " + responsibleId + ", name: " + cursor.getName(), Toast.LENGTH_SHORT).show();
                         responsibleList.remove(cursor);
                         responsibleListAdapter.notifyDataSetChanged();
-                        DatabaseHelper.deleteResponsible( DatabaseHelper.RESPONSIBLE_COLUMN_ID + "=" + responsibleId, null);
+                        DatabaseHelper.deleteResponsible(DatabaseHelper.RESPONSIBLE_COLUMN_ID + "=" + responsibleId, null);
                     }
                 });
                 ((EditText) dialogView.findViewById(R.id.responsible_dialog_name)).setText(cursor.getName());
@@ -168,5 +198,58 @@ public class ResponsibleFragment extends Fragment {
             }
         });
     }
+
+
+
+
+
+
+    public AlertDialog.Builder setAddResponsible(final Context ctx){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.responsible_add, null);
+        builder.setView(dialogView);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                EditText name = (EditText) ((Dialog) dialog).findViewById(R.id.responsible_add_name);
+                EditText surname = (EditText) ((Dialog) dialog).findViewById(R.id.responsible_add_surname);
+
+                ContentValues cvresponsible = new ContentValues();
+                cvresponsible.put(DatabaseHelper.RESPONSIBLE_COLUMN_NAME, name.getText().toString());
+                cvresponsible.put(DatabaseHelper.RESPONSIBLE_COLUMN_SURNAME, surname.getText().toString());
+                long lastResponsinleId = DatabaseHelper.addResponsible(null, cvresponsible);
+                Responsible responsible = new Responsible((int) lastResponsinleId, name.getText().toString(), surname.getText().toString());
+
+
+                //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
+
+                responsibleList.add(responsible);
+
+
+                responsibleListAdapter.notifyDataSetChanged();
+
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+
+
+
+        return builder;
+
+    }
+
 
 }
