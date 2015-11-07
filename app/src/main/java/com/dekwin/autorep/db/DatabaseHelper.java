@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.dekwin.autorep.entities.Organization;
 import com.dekwin.autorep.entities.Repair;
 import com.dekwin.autorep.entities.Responsible;
 import com.dekwin.autorep.entities.Spare;
@@ -64,6 +65,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RESPONSIBLE_COLUMN_NAME="name";
     public static final String RESPONSIBLE_COLUMN_SURNAME="surname";
 
+    public static final String ORGANIZATIONS_TABLE_NAME="organizations";
+    public static final String ORGANIZATIONS_COLUMN_ID="_id";
+    public static final String ORGANIZATIONS_COLUMN_NAME="name";
+    public static final String ORGANIZATIONS_COLUMN_ACCOUNT="account";
+    public static final String ORGANIZATIONS_COLUMN_PHONE="phone";
+
+
 
     public void initDB(SQLiteDatabase db){
         db.execSQL("DROP TABLE IF EXISTS " + "organizations");
@@ -81,11 +89,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //\
         //  String organizations ="CREATE TABLE organizations( _id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, account TEXT, phone INTEGER);";
 
-        String organizations ="CREATE TABLE organizations (" +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "name TEXT, " +
-                "account TEXT, " +
-                "phone TEXT " +
+        String organizations ="CREATE TABLE "+ORGANIZATIONS_TABLE_NAME+" (" +
+                ORGANIZATIONS_COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ORGANIZATIONS_COLUMN_NAME+" TEXT, " +
+                ORGANIZATIONS_COLUMN_ACCOUNT+" TEXT, " +
+                ORGANIZATIONS_COLUMN_PHONE+" TEXT " +
                 ");";
 
         String contracts= "CREATE TABLE contracts (" +
@@ -179,6 +187,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("INSERT INTO "+RESPONSIBLE_TABLE_NAME+"("+RESPONSIBLE_COLUMN_NAME+","+RESPONSIBLE_COLUMN_SURNAME+") VALUES('Вася','Петров');");
         db.execSQL("INSERT INTO "+RESPONSIBLE_TABLE_NAME+"("+RESPONSIBLE_COLUMN_NAME+","+RESPONSIBLE_COLUMN_SURNAME+") VALUES('Иван','Иванов');");
+
+        db.execSQL("INSERT INTO "+ORGANIZATIONS_TABLE_NAME+"("+ORGANIZATIONS_COLUMN_NAME+","
+                +ORGANIZATIONS_COLUMN_ACCOUNT+","+ORGANIZATIONS_COLUMN_PHONE
+                +") VALUES('Корпорация юмора','Петровская25','88005553535');");
+
+        db.execSQL("INSERT INTO "+ORGANIZATIONS_TABLE_NAME+"("+ORGANIZATIONS_COLUMN_NAME+","
+                +ORGANIZATIONS_COLUMN_ACCOUNT+","+ORGANIZATIONS_COLUMN_PHONE
+                +") VALUES('Корпорация зла 2','киев борщаговская 334','+380953334598');");
+
 
     }
 
@@ -341,6 +358,58 @@ public static void updateSpares(String table,ContentValues cv, String field, Str
     public static void updateResponsible(ContentValues cv, String field, String[] bind){
         SQLiteDatabase sdb= sInstance.getWritableDatabase();
         sdb.update(RESPONSIBLE_TABLE_NAME, cv, field,
+                bind);
+
+        sdb.close();
+    }
+
+
+    /**
+     * Organizations part
+     */
+
+    public static ArrayList<Organization> selectOrganizations(String sort){
+        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+        Cursor c1 = sdb.query(ORGANIZATIONS_TABLE_NAME, new String[]{ORGANIZATIONS_COLUMN_ID, ORGANIZATIONS_COLUMN_NAME, ORGANIZATIONS_COLUMN_ACCOUNT, ORGANIZATIONS_COLUMN_PHONE},
+                null, null,
+                null, null, sort) ;
+        ArrayList <Organization> organizationsList=new ArrayList<>();
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                   Organization organization = new Organization(Integer.parseInt(c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_ID))),
+                            c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_NAME)),c1.getString(c1.getColumnIndex( ORGANIZATIONS_COLUMN_ACCOUNT)),c1.getString(c1.getColumnIndex( ORGANIZATIONS_COLUMN_PHONE)));
+
+
+                    organizationsList.add(organization);
+
+                } while (c1.moveToNext());
+            }
+        }
+        c1.close();
+        sdb.close();
+        return organizationsList;
+    }
+
+    public static long addOrganization(String  columnHack, ContentValues cv ){
+        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+        long lastId= sdb.insert(ORGANIZATIONS_TABLE_NAME, columnHack, cv);
+
+        sdb.close();
+
+        return lastId;
+    }
+
+
+    public static void deleteOrganization(String whereClause, String whereArgs[]){
+        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+        sdb.delete(ORGANIZATIONS_TABLE_NAME, whereClause, whereArgs);
+
+        sdb.close();
+    }
+    public static void updateOrganization(ContentValues cv, String field, String[] bind){
+        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+        sdb.update(ORGANIZATIONS_TABLE_NAME, cv, field,
                 bind);
 
         sdb.close();

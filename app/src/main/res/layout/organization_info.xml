@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:background="#eeeeee"
+    android:stretchColumns="*"
+
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TableRow android:background="#cccccc"
+        android:padding="5dp">
+        <TextView android:layout_width="fill_parent"
+            android:id="@+id/organization_info_header_name"
+            android:layout_height="wrap_content"
+            android:text="Название"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+        <TextView android:layout_width="fill_parent"
+            android:id="@+id/organization_info_header_account"
+            android:layout_height="wrap_content"
+            android:text="Р.счет"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+        <TextView android:layout_width="fill_parent"
+            android:id="@+id/organization_info_header_phone"
+            android:layout_height="wrap_content"
+            android:text="Телефон"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+
+
+    </TableRow>
+
+    <ListView
+        android:id="@+id/organization_info_list"
+
+
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    </ListView>
+
+</TableLayout>

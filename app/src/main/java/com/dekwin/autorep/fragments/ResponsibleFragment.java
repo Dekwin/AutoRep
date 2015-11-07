@@ -210,7 +210,7 @@ public class ResponsibleFragment extends Fragment {
         final View dialogView = inflater.inflate(R.layout.responsible_add, null);
         builder.setView(dialogView);
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -221,8 +221,8 @@ public class ResponsibleFragment extends Fragment {
                 ContentValues cvresponsible = new ContentValues();
                 cvresponsible.put(DatabaseHelper.RESPONSIBLE_COLUMN_NAME, name.getText().toString());
                 cvresponsible.put(DatabaseHelper.RESPONSIBLE_COLUMN_SURNAME, surname.getText().toString());
-                long lastResponsinleId = DatabaseHelper.addResponsible(null, cvresponsible);
-                Responsible responsible = new Responsible((int) lastResponsinleId, name.getText().toString(), surname.getText().toString());
+                long lastResponsibleId = DatabaseHelper.addResponsible(null, cvresponsible);
+                Responsible responsible = new Responsible((int) lastResponsibleId, name.getText().toString(), surname.getText().toString());
 
 
                 //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
@@ -235,7 +235,7 @@ public class ResponsibleFragment extends Fragment {
 
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Work;
+import com.dekwin.autorep.fragments.OrganizationsFragment;
 import com.dekwin.autorep.fragments.ResponsibleFragment;
 import com.dekwin.autorep.fragments.SparesFragment;
 import com.dekwin.autorep.fragments.AddWorksFragment;
@@ -163,8 +164,11 @@ public class MainActivity extends AppCompatActivity
                 case 2:
                     fragment=new ResponsibleFragment();
                     break;
+                case 3:
+                    fragment=new OrganizationsFragment();
+                    break;
                 default:
-                    fragment=new AddWorksFragment();
+                    fragment=new SparesFragment();
                     break;
             }
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#cccccc"
+    android:padding="5dp"
+    android:orientation="horizontal"
+    android:weightSum="1">
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Название"
+        android:gravity="center_horizontal"
+        android:id="@+id/organizations_info_element_name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_weight="0.3333" />
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Р.счет"
+        android:gravity="center_horizontal"
+        android:id="@+id/organizations_info_element_account"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_weight="0.3333" />
+
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Телефон"
+        android:gravity="center_horizontal"
+        android:id="@+id/organizations_info_element_phone"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_weight="0.3333" />
+
+</LinearLayout>

@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:rowCount="3"
+        android:rowCount="4"
         android:useDefaultMargins="false"
         android:transitionGroup="false"
         android:touchscreenBlocksFocus="false">
@@ -18,14 +18,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Название:"
-            android:id="@+id/textView3"
+
             android:layout_row="0"
             android:layout_column="0" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spares_add_name"
+            android:id="@+id/organizations_dialog_name"
             android:layout_row="0"
             android:layout_column="1"
             android:singleLine="false"
@@ -35,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Цена:"
-            android:id="@+id/textView4"
+            android:text="Р.счет:"
+
             android:layout_row="1"
             android:layout_column="0"
             android:singleLine="false" />
@@ -44,20 +44,34 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spares_add_price"
+            android:id="@+id/organizations_dialog_account"
             android:layout_row="1"
             android:layout_column="1"
-            android:inputType="number"
+            android:hint="введите р.счет..." />
 
-            android:hint="введите цену..." />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Телефон:"
+
+            android:layout_row="2"
+            android:layout_column="0"
+            android:singleLine="false" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/organizations_dialog_phone"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:inputType="phone"
+            android:ems="10"
+            android:hint="введите телефон..." />
 
     </GridLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Выбрать работы"
-        android:id="@+id/spares_add_select_works"
-        android:layout_gravity="center_horizontal" />
+
 
 </LinearLayout>
