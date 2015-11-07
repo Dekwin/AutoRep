@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/SaleOrderLines"
+    android:background="#eeeeee"
+    android:stretchColumns="*"
+
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TableRow android:background="#cccccc"
+        android:padding="5dp">
+        <TextView android:layout_width="fill_parent"
+            android:id="@+id/spares_list_header_name"
+            android:layout_height="wrap_content"
+            android:text="Название"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+        <TextView android:layout_width="fill_parent"
+            android:id="@+id/spares_list_header_price"
+            android:layout_height="wrap_content"
+            android:text="Цена"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+
+
+    </TableRow>
+
+ <ListView
+     android:id="@+id/spares_list"
+
+
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+  </ListView>
+
+</TableLayout>
