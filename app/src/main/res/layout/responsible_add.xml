@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:useDefaultMargins="false"
+        android:transitionGroup="false"
+        android:touchscreenBlocksFocus="false">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Имя:"
+
+            android:layout_row="0"
+            android:layout_column="0" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/responsible_add_name"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:singleLine="false"
+            android:hint="введите имя..." />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Фамилия:"
+
+            android:layout_row="1"
+            android:layout_column="0"
+            android:singleLine="false" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/responsible_add_surname"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:hint="введите фамилию..." />
+
+    </GridLayout>
+
+
+
+</LinearLayout>
