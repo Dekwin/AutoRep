@@ -42,6 +42,9 @@ public class SparesFragment extends Fragment  {
      SparesAdapter sparesListAdapter;
 
     View rootView ;
+    private boolean notShowMenu=false;
+    private int workId=0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,18 +52,31 @@ public class SparesFragment extends Fragment  {
         setHasOptionsMenu(true);
         tbl = (ListView)rootView.findViewById(R.id.spares_list);
 
+        notShowMenu = getArguments().getBoolean("nomenu");
+        workId=getArguments().getInt("workId");
+        Log.e("in notshowmenu ",notShowMenu+" size "+getArguments().size()+" workid "+workId);
+
         showSpares(getActivity());
         setSortHeader(getActivity());
+
+
+
+
+
+
         return rootView;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        inflater.inflate(R.menu.spares, menu);
+        if(!notShowMenu) {
+            inflater.inflate(R.menu.spares, menu);
+            super.onCreateOptionsMenu(menu, inflater);
+        }
 
-        super.onCreateOptionsMenu(menu, inflater);
     }
+
 
 
     @Override
@@ -82,7 +98,7 @@ public class SparesFragment extends Fragment  {
 
 
     public void showSpares(final Context ctx){
-       sparesList =DatabaseHelper.selectSpares(null);
+       sparesList =DatabaseHelper.selectSpares(null,workId);
        sparesListAdapter = new SparesAdapter(  ctx, sparesList);
         tbl.setLongClickable(true);
         tbl.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -286,7 +302,7 @@ public AlertDialog.Builder setAddSpare(final Context ctx){
                     asc = false;
                 }
                 //final SparesAdapter contactListAdapter = new SparesAdapter(  ctx, DatabaseHelper.selectSpares(sortType));
-                sparesList=DatabaseHelper.selectSpares(sortType);
+                sparesList=DatabaseHelper.selectSpares(sortType,workId);
                 sparesListAdapter=new SparesAdapter(ctx,sparesList );
                 tbl.setAdapter(sparesListAdapter);
                 return false;
@@ -311,7 +327,7 @@ public AlertDialog.Builder setAddSpare(final Context ctx){
 
 
                 //final SparesAdapter contactListAdapter = new SparesAdapter(  ctx, DatabaseHelper.selectSpares(sortType));
-                sparesList= DatabaseHelper.selectSpares(sortType);
+                sparesList= DatabaseHelper.selectSpares(sortType,workId);
                 sparesListAdapter=new SparesAdapter(ctx, sparesList);
                 tbl.setAdapter(sparesListAdapter);
                 return false;

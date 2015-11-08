@@ -20,6 +20,7 @@ import com.dekwin.autorep.fragments.OrganizationsFragment;
 import com.dekwin.autorep.fragments.ResponsibleFragment;
 import com.dekwin.autorep.fragments.SparesFragment;
 import com.dekwin.autorep.fragments.AddWorksFragment;
+import com.dekwin.autorep.fragments.WorksFragment;
 
 import java.util.List;
 
@@ -65,6 +66,13 @@ public class MainActivity extends AppCompatActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+
+        for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+            fragmentManager.popBackStack();
+        }
+
+
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
@@ -87,6 +95,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
                 break;
         }
     }
@@ -167,8 +178,11 @@ public class MainActivity extends AppCompatActivity
                 case 3:
                     fragment=new OrganizationsFragment();
                     break;
+                case 4:
+                    fragment=new WorksFragment();
+                    break;
                 default:
-                    fragment=new SparesFragment();
+                    fragment=new WorksFragment();
                     break;
             }
 

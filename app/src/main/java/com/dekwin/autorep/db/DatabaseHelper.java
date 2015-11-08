@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.dekwin.autorep.entities.Organization;
 import com.dekwin.autorep.entities.Repair;
@@ -260,6 +261,48 @@ initDB(db);
         Cursor c1 = sdb.query(SPARES_TABLE_NAME, new String[]{SPARES_COLUMN_ID, SPARES_COLUMN_NAME,SPARES_COLUMN_PRICE},
                 null, null,
                 null, null, sort) ;
+        ArrayList <Spare> sparesList=new ArrayList<>();
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                    Spare contactListItems = new Spare(Integer.parseInt(c1.getString(c1.getColumnIndex(SPARES_COLUMN_ID))),
+                            c1.getString(c1.getColumnIndex(SPARES_COLUMN_NAME)),Float.parseFloat(c1.getString(c1.getColumnIndex(SPARES_COLUMN_PRICE))));
+
+
+                    sparesList.add(contactListItems);
+
+                } while (c1.moveToNext());
+            }
+            c1.close();
+        }
+
+        sdb.close();
+        return  sparesList;
+    }
+
+    public static ArrayList<Spare> selectSpares(String sort,int workId){
+        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+        Cursor c1=null;
+
+        if(workId!=0) {
+            String srt="";
+            if (sort!=null){
+                srt="ORDER BY "+sort;
+            }
+            String query = "SELECT " + SPARES_COLUMN_ID + ", " + SPARES_COLUMN_NAME + ", " + SPARES_COLUMN_PRICE
+                    + " FROM " + SPARES_TABLE_NAME + " WHERE " + SPARES_COLUMN_ID
+                    + " IN (SELECT " + WORKS_SPARES_SPARE_ID + " FROM " + WORKS_SPARES_TABLE_NAME
+                    + " WHERE " + WORKS_SPARES_WORK_ID + " = " + workId + ") "+srt;
+
+            c1 = sdb.rawQuery(query, null);
+
+           Log.e("count ",c1.getCount()+"");
+        }else {
+            c1 = sdb.query(SPARES_TABLE_NAME, new String[]{SPARES_COLUMN_ID, SPARES_COLUMN_NAME, SPARES_COLUMN_PRICE},
+                    null, null,
+                    null, null, sort);
+        }
+
         ArrayList <Spare> sparesList=new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
