@@ -25,7 +25,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Activity context;
 
     protected Map<String, List<Work>> laptopCollections;
-    private List<Repair > laptops;
+    private List<Repair> laptops;
 
 
     public ExpandableListAdapter(Activity context, List<Repair> laptops,
@@ -34,12 +34,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         this.laptopCollections = laptopCollections;
         this.laptops = laptops;
 
-        if (laptops==null)
-        Log.e("Err11 ","laptops=null");
-        if (laptopCollections==null)
-            Log.e("Err11 ","laptopscollection=null");
+        if (laptops == null)
+            Log.e("Err11 ", "laptops=null");
+        if (laptopCollections == null)
+            Log.e("Err11 ", "laptopscollection=null");
 
-        Log.e("Err11 ","not null");
+        Log.e("Err11 ", "not null");
     }
 
     public Object getChild(int groupPosition, int childPosition) {
@@ -51,29 +51,27 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
 
-
-
     public View getChildView(final int groupPosition, final int childPosition,
                              final boolean isLastChild, View convertView, ViewGroup parent) {
-        final Work laptop = (Work ) getChild(groupPosition, childPosition);
+        final Work laptop = (Work) getChild(groupPosition, childPosition);
         LayoutInflater inflater = context.getLayoutInflater();
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.work_info_element, null);
         }
 
-      //  TextView item = (TextView) convertView.findViewById(R.id.work_info_element_checkbox);
+        //  TextView item = (TextView) convertView.findViewById(R.id.work_info_element_checkbox);
         final CheckBox item = (CheckBox) convertView.findViewById(R.id.work_info_element_checkbox);
         item.setText(laptop.getName());
 
         item.setChecked(laptop.isSelected());
         //laptop.isSelected(item.isChecked());
-       // CheckBox cb =(CheckBox)convertView.findViewById(R.id.work_info_element_checkbox);
+        // CheckBox cb =(CheckBox)convertView.findViewById(R.id.work_info_element_checkbox);
         item.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
 
-                Log.e("checkbox: ", cb.getText().toString()+" check? "+cb.isChecked());
+                Log.e("checkbox: ", cb.getText().toString() + " check? " + cb.isChecked());
 
                 laptop.isSelected(cb.isChecked());
 
@@ -111,7 +109,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             }
         });
 */
-
 
 
         return convertView;

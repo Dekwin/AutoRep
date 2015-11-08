@@ -56,7 +56,7 @@ public class SparesAdapter extends BaseAdapter {
         TextView spareId = (TextView) convertView.findViewById(R.id.spare_name);
         spareId.setText(spare.getName());
         TextView tvName = (TextView) convertView.findViewById(R.id.spare_price);
-        tvName.setText(spare.getPrice()+"");
+        tvName.setText(spare.getPrice() + "");
 
 
         return convertView;

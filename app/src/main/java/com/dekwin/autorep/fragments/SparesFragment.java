@@ -35,33 +35,29 @@ import java.util.List;
 /**
  * Created by dekst on 04.11.2015.
  */
-public class SparesFragment extends Fragment  {
+public class SparesFragment extends Fragment {
     private ListView tbl;
 
-     ArrayList<Spare> sparesList;
-     SparesAdapter sparesListAdapter;
+    ArrayList<Spare> sparesList;
+    SparesAdapter sparesListAdapter;
 
-    View rootView ;
-    private boolean notShowMenu=false;
-    private int workId=0;
+    View rootView;
+    private boolean notShowMenu = false;
+    private int workId = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-         rootView = inflater.inflate(R.layout.spare_info, container, false);
+        rootView = inflater.inflate(R.layout.spare_info, container, false);
         setHasOptionsMenu(true);
-        tbl = (ListView)rootView.findViewById(R.id.spares_list);
+        tbl = (ListView) rootView.findViewById(R.id.spares_list);
 
         notShowMenu = getArguments().getBoolean("nomenu");
-        workId=getArguments().getInt("workId");
-        Log.e("in notshowmenu ",notShowMenu+" size "+getArguments().size()+" workid "+workId);
+        workId = getArguments().getInt("workId");
+        Log.e("in notshowmenu ", notShowMenu + " size " + getArguments().size() + " workid " + workId);
 
         showSpares(getActivity());
         setSortHeader(getActivity());
-
-
-
-
 
 
         return rootView;
@@ -70,13 +66,12 @@ public class SparesFragment extends Fragment  {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        if(!notShowMenu) {
+        if (!notShowMenu) {
             inflater.inflate(R.menu.spares, menu);
             super.onCreateOptionsMenu(menu, inflater);
         }
 
     }
-
 
 
     @Override
@@ -95,11 +90,9 @@ public class SparesFragment extends Fragment  {
     }
 
 
-
-
-    public void showSpares(final Context ctx){
-       sparesList =DatabaseHelper.selectSpares(null,workId);
-       sparesListAdapter = new SparesAdapter(  ctx, sparesList);
+    public void showSpares(final Context ctx) {
+        sparesList = DatabaseHelper.selectSpares(null, workId);
+        sparesListAdapter = new SparesAdapter(ctx, sparesList);
         tbl.setLongClickable(true);
         tbl.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> listView, View v, int position, long id) {
@@ -155,7 +148,8 @@ public class SparesFragment extends Fragment  {
                                 "Deleted. id: " + countryCode + ", name: " + cursor.getName(), Toast.LENGTH_SHORT).show();
                         sparesList.remove(cursor);
                         sparesListAdapter.notifyDataSetChanged();
-                        DatabaseHelper.deleteSpares(DatabaseHelper.SPARES_TABLE_NAME, DatabaseHelper.SPARES_COLUMN_ID + "=" + countryCode, null);
+                        DatabaseHelper.deleteSpares(DatabaseHelper.SPARES_TABLE_NAME, DatabaseHelper.SPARES_COLUMN_ID + " = " + countryCode, null);
+                        DatabaseHelper.deleteWorksSpares(DatabaseHelper.WORKS_SPARES_SPARE_ID + " = " + countryCode,null);
                     }
                 });
                 ((EditText) dialogView.findViewById(R.id.editText_spares_name)).setText(cursor.getName());
@@ -168,16 +162,17 @@ public class SparesFragment extends Fragment  {
     }
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+
     public static DialogFragment newInstance(int sectionNumber) {
 
-        DialogFragment fragment=null;
-        switch (sectionNumber){
+        DialogFragment fragment = null;
+        switch (sectionNumber) {
             case 1:
-                fragment=new AddWorksFragment();
+                fragment = new AddWorksFragment();
                 break;
 
             default:
-                fragment=new AddWorksFragment();
+                fragment = new AddWorksFragment();
                 break;
         }
 
@@ -189,105 +184,102 @@ public class SparesFragment extends Fragment  {
     }
 
 
+    public AlertDialog.Builder setAddSpare(final Context ctx) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.spares_add, null);
+        builder.setView(dialogView);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                EditText name = (EditText) ((Dialog) dialog).findViewById(R.id.spares_add_name);
+                EditText price = (EditText) ((Dialog) dialog).findViewById(R.id.spares_add_price);
+
+                ContentValues cvspare = new ContentValues();
+                cvspare.put(DatabaseHelper.SPARES_COLUMN_NAME, name.getText().toString());
+                cvspare.put(DatabaseHelper.SPARES_COLUMN_PRICE, price.getText().toString());
+                long lastSpareId = DatabaseHelper.addSpares(null, cvspare);
+                Spare spare = new Spare((int) lastSpareId, name.getText().toString(), Float.parseFloat(price.getText().toString()));
+
+                if (worksFromFragment != null) {
+                    ContentValues cv = new ContentValues();
 
 
-public AlertDialog.Builder setAddSpare(final Context ctx){
-    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-    final LayoutInflater inflater = getActivity().getLayoutInflater();
-    final View dialogView = inflater.inflate(R.layout.spares_add, null);
-    builder.setView(dialogView);
+                    for (Work w : worksFromFragment) {
+                        cv.clear();
 
-    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        cv.put(DatabaseHelper.WORKS_SPARES_SPARE_ID, lastSpareId);
+                        cv.put(DatabaseHelper.WORKS_SPARES_WORK_ID, w.getId());
+                        Log.e("works_spares: ", "SPARE_ID: " + lastSpareId + " WORK_ID: " + w.getId());
+                        DatabaseHelper.addWorksSpares(null, cv);
+                        Log.e("works ", "id=" + w.getId() + " repairsid " + w.getRepairsId() + " name " + w.getName());
+                    }
+                } else Log.e("null point ", " null");
 
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            // TODO Auto-generated method stub
-            EditText name = (EditText) ((Dialog) dialog).findViewById(R.id.spares_add_name);
-            EditText price = (EditText) ((Dialog) dialog).findViewById(R.id.spares_add_price);
+                //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
 
-            ContentValues cvspare=new ContentValues();
-            cvspare.put("name",name.getText().toString());
-            cvspare.put("price", price.getText().toString());
-            long lastSpareId= DatabaseHelper.addSpares(null, cvspare);
-            Spare spare= new Spare((int)lastSpareId,name.getText().toString(),Float.parseFloat(price.getText().toString()));
+                sparesList.add(spare);
+                Log.e("notified ", spare.getName());
 
-            if (worksFromFragment!=null) {
-                ContentValues cv=new ContentValues();
+                sparesListAdapter.notifyDataSetChanged();
 
 
+                fr = null;
 
-                for (Work w : worksFromFragment) {
-                    cv.clear();
-
-                    cv.put(DatabaseHelper.WORKS_SPARES_SPARE_ID, lastSpareId);
-                    cv.put(DatabaseHelper.WORKS_SPARES_WORK_ID, w.getId());
-                    Log.e("works_spares: ","SPARE_ID: "+lastSpareId+" WORK_ID: "+w.getId());
-                    DatabaseHelper.addWorksSpares(null, cv);
-                    Log.e("works ", "id=" + w.getId() + " repairsid " + w.getRepairsId()+" name "+w.getName());
-                }
-            }else Log.e("null point "," null");
-
-            //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
-
-            sparesList.add(spare);
-            Log.e("notified ",spare.getName());
-
-            sparesListAdapter.notifyDataSetChanged();
-
-
-            fr=null;
-
-        }
-    });
-    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            // TODO Auto-generated method stub
-
-        }
-    });
-
-    Button selectWorks=(Button)dialogView.findViewById(R.id.spares_add_select_works);
-
-    selectWorks.setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-
-            // FragmentManager fragmentManager = getFragmentManager();
-//newInstance(1);
-            if (fr == null) {
-                fr = newInstance(1);
-
-                fr.show(getFragmentManager().beginTransaction(), "DialogFragment");
-            } else {
-              //  if (fr.getDialog()==null)
-               // fr.show(getFragmentManager().beginTransaction(), "DialogFragment");
-               if (fr.getDialog()==null)
-                fr.show(getFragmentManager().beginTransaction(), "DialogFragment");
-                else
-                    fr.getDialog().show();
             }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        Button selectWorks = (Button) dialogView.findViewById(R.id.spares_add_select_works);
+
+        selectWorks.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                // FragmentManager fragmentManager = getFragmentManager();
+//newInstance(1);
+                if (fr == null) {
+                    fr = newInstance(1);
+
+                    fr.show(getFragmentManager().beginTransaction(), "DialogFragment");
+                } else {
+                    //  if (fr.getDialog()==null)
+                    // fr.show(getFragmentManager().beginTransaction(), "DialogFragment");
+                    if (fr.getDialog() == null)
+                        fr.show(getFragmentManager().beginTransaction(), "DialogFragment");
+                    else
+                        fr.getDialog().show();
+                }
 //
-            Log.e("trinda", " trinda!!!");
-            //  fragmentManager.beginTransaction()
-            //           .replace(R.id.container, newInstance(1)).addToBackStack(null)
-            //           .commit();
+                Log.e("trinda", " trinda!!!");
+                //  fragmentManager.beginTransaction()
+                //           .replace(R.id.container, newInstance(1)).addToBackStack(null)
+                //           .commit();
 
 
-        }
+            }
 
-    });
-
-
-    return builder;
-
-}
-
-    private DialogFragment fr=null;
+        });
 
 
-    public void setSortHeader(final Context ctx){
-        TextView headerId= (TextView)rootView.findViewById(R.id.spares_list_header_name);
+        return builder;
+
+    }
+
+    private DialogFragment fr = null;
+
+
+    public void setSortHeader(final Context ctx) {
+        TextView headerId = (TextView) rootView.findViewById(R.id.spares_list_header_name);
         headerId.setOnTouchListener(new View.OnTouchListener() {
             private boolean asc = true;
 
@@ -302,14 +294,14 @@ public AlertDialog.Builder setAddSpare(final Context ctx){
                     asc = false;
                 }
                 //final SparesAdapter contactListAdapter = new SparesAdapter(  ctx, DatabaseHelper.selectSpares(sortType));
-                sparesList=DatabaseHelper.selectSpares(sortType,workId);
-                sparesListAdapter=new SparesAdapter(ctx,sparesList );
+                sparesList = DatabaseHelper.selectSpares(sortType, workId);
+                sparesListAdapter = new SparesAdapter(ctx, sparesList);
                 tbl.setAdapter(sparesListAdapter);
                 return false;
             }
         });
 
-        TextView headerName= (TextView)rootView.findViewById(R.id.spares_list_header_price);
+        TextView headerName = (TextView) rootView.findViewById(R.id.spares_list_header_price);
         headerName.setOnTouchListener(new View.OnTouchListener() {
 
             private boolean asc = true;
@@ -327,18 +319,18 @@ public AlertDialog.Builder setAddSpare(final Context ctx){
 
 
                 //final SparesAdapter contactListAdapter = new SparesAdapter(  ctx, DatabaseHelper.selectSpares(sortType));
-                sparesList= DatabaseHelper.selectSpares(sortType,workId);
-                sparesListAdapter=new SparesAdapter(ctx, sparesList);
+                sparesList = DatabaseHelper.selectSpares(sortType, workId);
+                sparesListAdapter = new SparesAdapter(ctx, sparesList);
                 tbl.setAdapter(sparesListAdapter);
                 return false;
             }
         });
     }
 
-    List<Work> worksFromFragment=null;
+    List<Work> worksFromFragment = null;
 
-    public void getWorksIdFromDialog(List<Work> works){
-        worksFromFragment=works;
+    public void getWorksIdFromDialog(List<Work> works) {
+        worksFromFragment = works;
 
     }
 

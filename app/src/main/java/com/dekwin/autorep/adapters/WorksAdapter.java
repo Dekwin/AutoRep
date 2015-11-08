@@ -25,7 +25,7 @@ public class WorksAdapter extends BaseExpandableListAdapter {
     private Activity context;
 
     protected Map<String, List<Work>> laptopCollections;
-    private List<Repair > laptops;
+    private List<Repair> laptops;
 
 
     public WorksAdapter(Activity context, List<Repair> laptops,
@@ -34,12 +34,12 @@ public class WorksAdapter extends BaseExpandableListAdapter {
         this.laptopCollections = laptopCollections;
         this.laptops = laptops;
 
-        if (laptops==null)
-            Log.e("Err11 ","laptops=null");
-        if (laptopCollections==null)
-            Log.e("Err11 ","laptopscollection=null");
+        if (laptops == null)
+            Log.e("Err11 ", "laptops=null");
+        if (laptopCollections == null)
+            Log.e("Err11 ", "laptopscollection=null");
 
-        Log.e("Err11 ","not null");
+        Log.e("Err11 ", "not null");
     }
 
     public Object getChild(int groupPosition, int childPosition) {
@@ -51,18 +51,16 @@ public class WorksAdapter extends BaseExpandableListAdapter {
     }
 
 
-
-
     public View getChildView(final int groupPosition, final int childPosition,
                              final boolean isLastChild, View convertView, ViewGroup parent) {
-        final Work laptop = (Work ) getChild(groupPosition, childPosition);
+        final Work laptop = (Work) getChild(groupPosition, childPosition);
         LayoutInflater inflater = context.getLayoutInflater();
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.work_info_list_element, null);
         }
 
-         TextView item = (TextView) convertView.findViewById(R.id.work_info_list_element_name);
+        TextView item = (TextView) convertView.findViewById(R.id.work_info_list_element_name);
 
         item.setText(laptop.getName());
 
@@ -108,7 +106,6 @@ public class WorksAdapter extends BaseExpandableListAdapter {
 */
 
 
-
         return convertView;
     }
 
@@ -140,6 +137,27 @@ public class WorksAdapter extends BaseExpandableListAdapter {
         TextView item = (TextView) convertView.findViewById(R.id.repair_group_element_name);
         item.setTypeface(null, Typeface.BOLD);
         item.setText(laptopName.getName());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         return convertView;
     }
 

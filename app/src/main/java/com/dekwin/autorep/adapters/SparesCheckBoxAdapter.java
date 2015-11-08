@@ -1,10 +1,12 @@
 package com.dekwin.autorep.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.dekwin.autorep.R;
@@ -14,28 +16,28 @@ import com.dekwin.autorep.entities.Spare;
 import java.util.ArrayList;
 
 /**
- * Created by dekst on 07.11.2015.
+ * Created by dekst on 08.11.2015.
  */
-public class ResponsibleAdapter extends BaseAdapter {
+public class SparesCheckBoxAdapter extends BaseAdapter{
     Context context;
-    ArrayList<Responsible> responsibleList;
+    ArrayList<Spare> list;
 
-    public ResponsibleAdapter(Context context, ArrayList<Responsible> list) {
+    public SparesCheckBoxAdapter (Context context, ArrayList<Spare> list) {
 
         this.context = context;
-        responsibleList = list;
+        this.list = list;
     }
 
     @Override
     public int getCount() {
 
-        return responsibleList.size();
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
 
-        return responsibleList.get(position);
+        return list.get(position);
     }
 
     @Override
@@ -46,22 +48,41 @@ public class ResponsibleAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup arg2) {
-        Responsible responsible = responsibleList.get(position);
+        final Spare spare = list.get(position);
 
-
+/*
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.responsible_info_element, null);
 
         }
+        */
+        /*
         TextView name = (TextView) convertView.findViewById(R.id.responsible_info_element_name);
-        name.setText(responsible.getName());
+        name.setText(spare.getName());
         TextView surname = (TextView) convertView.findViewById(R.id.responsible_info_element_surname);
-        surname.setText(responsible.getSurname());
+        surname.setText(spare.getSurname());
+*/
+        CheckBox ch=new CheckBox(context);
+        ch.setText(spare.getName());
+        ch.setChecked(spare.isSelected());
+
+        ch.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+
+                Log.e("checkbox: ", cb.getText().toString() + " check? " + cb.isChecked());
+
+               spare.isSelected(cb.isChecked());
 
 
-        return convertView;
+                //  country.setSelected(cb.isChecked());
+            }
+        });
+
+
+        return ch;
     }
 
 }

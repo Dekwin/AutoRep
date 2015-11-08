@@ -42,39 +42,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static final String SPARES_TABLE_NAME="spares";
-    public static final String SPARES_COLUMN_ID="_id";
-    public static final String SPARES_COLUMN_NAME="name";
-    public static final String SPARES_COLUMN_PRICE="price";
+    public static final String SPARES_TABLE_NAME = "spares";
+    public static final String SPARES_COLUMN_ID = "_id";
+    public static final String SPARES_COLUMN_NAME = "name";
+    public static final String SPARES_COLUMN_PRICE = "price";
 
-    public static final String WORKS_TABLE_NAME="works";
-    public static final String WORKS_COLUMN_ID="_id";
-    public static final String WORKS_COLUMN_NAME="name";
-    public static final String WORKS_COLUMN_PRICE="price";
-    public static final String WORKS_COLUMN_REPAIRSID="repairsid";
+    public static final String WORKS_TABLE_NAME = "works";
+    public static final String WORKS_COLUMN_ID = "_id";
+    public static final String WORKS_COLUMN_NAME = "name";
+    public static final String WORKS_COLUMN_PRICE = "price";
+    public static final String WORKS_COLUMN_REPAIRSID = "repairsid";
 
-    public static final String REPAIRS_COLUMN_ID="_id";
-    public static final String REPAIRS_COLUMN_NAME="name";
-    public static final String REPAIRS_TABLE_NAME="repairs";
+    public static final String REPAIRS_COLUMN_ID = "_id";
+    public static final String REPAIRS_COLUMN_NAME = "name";
+    public static final String REPAIRS_TABLE_NAME = "repairs";
 
-    public static final String WORKS_SPARES_TABLE_NAME="works_spares";
-    public static final String WORKS_SPARES_WORK_ID="work_id";
-    public static final String WORKS_SPARES_SPARE_ID="spare_id";
+    public static final String WORKS_SPARES_TABLE_NAME = "works_spares";
+    public static final String WORKS_SPARES_WORK_ID = "work_id";
+    public static final String WORKS_SPARES_SPARE_ID = "spare_id";
 
-    public static final String RESPONSIBLE_TABLE_NAME="responsible";
-    public static final String RESPONSIBLE_COLUMN_ID="_id";
-    public static final String RESPONSIBLE_COLUMN_NAME="name";
-    public static final String RESPONSIBLE_COLUMN_SURNAME="surname";
+    public static final String RESPONSIBLE_TABLE_NAME = "responsible";
+    public static final String RESPONSIBLE_COLUMN_ID = "_id";
+    public static final String RESPONSIBLE_COLUMN_NAME = "name";
+    public static final String RESPONSIBLE_COLUMN_SURNAME = "surname";
 
-    public static final String ORGANIZATIONS_TABLE_NAME="organizations";
-    public static final String ORGANIZATIONS_COLUMN_ID="_id";
-    public static final String ORGANIZATIONS_COLUMN_NAME="name";
-    public static final String ORGANIZATIONS_COLUMN_ACCOUNT="account";
-    public static final String ORGANIZATIONS_COLUMN_PHONE="phone";
+    public static final String ORGANIZATIONS_TABLE_NAME = "organizations";
+    public static final String ORGANIZATIONS_COLUMN_ID = "_id";
+    public static final String ORGANIZATIONS_COLUMN_NAME = "name";
+    public static final String ORGANIZATIONS_COLUMN_ACCOUNT = "account";
+    public static final String ORGANIZATIONS_COLUMN_PHONE = "phone";
 
 
-
-    public void initDB(SQLiteDatabase db){
+    public void initDB(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + "organizations");
         db.execSQL("DROP TABLE IF EXISTS " + "contracts");
         db.execSQL("DROP TABLE IF EXISTS " + "repair_shops");
@@ -90,14 +89,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //\
         //  String organizations ="CREATE TABLE organizations( _id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, account TEXT, phone INTEGER);";
 
-        String organizations ="CREATE TABLE "+ORGANIZATIONS_TABLE_NAME+" (" +
-                ORGANIZATIONS_COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                ORGANIZATIONS_COLUMN_NAME+" TEXT, " +
-                ORGANIZATIONS_COLUMN_ACCOUNT+" TEXT, " +
-                ORGANIZATIONS_COLUMN_PHONE+" TEXT " +
+        String organizations = "CREATE TABLE " + ORGANIZATIONS_TABLE_NAME + " (" +
+                ORGANIZATIONS_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ORGANIZATIONS_COLUMN_NAME + " TEXT, " +
+                ORGANIZATIONS_COLUMN_ACCOUNT + " TEXT, " +
+                ORGANIZATIONS_COLUMN_PHONE + " TEXT " +
                 ");";
 
-        String contracts= "CREATE TABLE contracts (" +
+        String contracts = "CREATE TABLE contracts (" +
                 "_id integer primary key autoincrement," +
                 "organization integer," +
                 "repairshop_id integer," +
@@ -106,54 +105,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "price double" +
                 ");";
 
-        String repair_shops= "CREATE TABLE repair_shops (" +
+        String repair_shops = "CREATE TABLE repair_shops (" +
                 "_id integer primary key autoincrement," +
                 "responsible_id integer" +
                 ");";
 
-        String responsible = "CREATE TABLE "+RESPONSIBLE_TABLE_NAME+" (" +
-                RESPONSIBLE_COLUMN_ID+" integer primary key autoincrement," +
-                RESPONSIBLE_COLUMN_NAME+" varchar(255)," +
-                RESPONSIBLE_COLUMN_SURNAME+" varchar(255)" +
+        String responsible = "CREATE TABLE " + RESPONSIBLE_TABLE_NAME + " (" +
+                RESPONSIBLE_COLUMN_ID + " integer primary key autoincrement," +
+                RESPONSIBLE_COLUMN_NAME + " varchar(255)," +
+                RESPONSIBLE_COLUMN_SURNAME + " varchar(255)" +
                 ")";
 
-        String contracts_works= "CREATE TABLE contracts_works (" +
+        String contracts_works = "CREATE TABLE contracts_works (" +
                 "contract_id integer," +
                 "work_id integer" +
                 ");";
 
-        String works= "CREATE TABLE "+WORKS_TABLE_NAME+" (" +
-                WORKS_COLUMN_ID+" integer primary key autoincrement," +
-                WORKS_COLUMN_NAME+" varchar(255)," +
-                WORKS_COLUMN_PRICE+" real," +
-                WORKS_COLUMN_REPAIRSID+" int," +
-                "FOREIGN KEY("+WORKS_COLUMN_REPAIRSID+") REFERENCES "+REPAIRS_TABLE_NAME+"("+REPAIRS_COLUMN_ID+")"+
+        String works = "CREATE TABLE " + WORKS_TABLE_NAME + " (" +
+                WORKS_COLUMN_ID + " integer primary key autoincrement," +
+                WORKS_COLUMN_NAME + " varchar(255)," +
+                WORKS_COLUMN_PRICE + " real," +
+                WORKS_COLUMN_REPAIRSID + " int," +
+                "FOREIGN KEY(" + WORKS_COLUMN_REPAIRSID + ") REFERENCES " + REPAIRS_TABLE_NAME + "(" + REPAIRS_COLUMN_ID + ")" +
 
                 ");";
 
-        String works_spares= "CREATE TABLE "+WORKS_SPARES_TABLE_NAME+" (" +
-                WORKS_SPARES_WORK_ID+" integer," +
-                WORKS_SPARES_SPARE_ID+" integer," +
-                "FOREIGN KEY("+WORKS_SPARES_WORK_ID+") REFERENCES "+WORKS_TABLE_NAME+"("+WORKS_COLUMN_ID+"),"+
+        String works_spares = "CREATE TABLE " + WORKS_SPARES_TABLE_NAME + " (" +
+                WORKS_SPARES_WORK_ID + " integer," +
+                WORKS_SPARES_SPARE_ID + " integer," +
+                "FOREIGN KEY(" + WORKS_SPARES_WORK_ID + ") REFERENCES " + WORKS_TABLE_NAME + "(" + WORKS_COLUMN_ID + ")," +
 
-                "FOREIGN KEY("+WORKS_SPARES_SPARE_ID+") REFERENCES "+SPARES_TABLE_NAME+"("+SPARES_COLUMN_ID+")"+
+                "FOREIGN KEY(" + WORKS_SPARES_SPARE_ID + ") REFERENCES " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_ID + ")" +
                 ");";
 
 
-
-
-
-
-        String spares= "CREATE TABLE "+SPARES_TABLE_NAME+" (" +
-                SPARES_COLUMN_ID+" integer primary key autoincrement," +
-                SPARES_COLUMN_NAME+" varchar(255)," +
-                SPARES_COLUMN_PRICE+" real" +
+        String spares = "CREATE TABLE " + SPARES_TABLE_NAME + " (" +
+                SPARES_COLUMN_ID + " integer primary key autoincrement," +
+                SPARES_COLUMN_NAME + " varchar(255)," +
+                SPARES_COLUMN_PRICE + " real" +
                 ");";
 
 
-        String repair= "CREATE TABLE "+REPAIRS_TABLE_NAME+" (" +
-                REPAIRS_COLUMN_ID+" integer primary key autoincrement," +
-                REPAIRS_COLUMN_NAME+" varchar(255)" +
+        String repair = "CREATE TABLE " + REPAIRS_TABLE_NAME + " (" +
+                REPAIRS_COLUMN_ID + " integer primary key autoincrement," +
+                REPAIRS_COLUMN_NAME + " varchar(255)" +
                 ");";
 
         String works_repairs = "CREATE TABLE works_repairs (" +
@@ -173,7 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(repair);
         db.execSQL(works_repairs);
 
-        for (int i=0; i<10;i++) {
+        for (int i = 0; i < 10; i++) {
             db.execSQL("INSERT INTO spares(name,price) VALUES('Dviglo',200);");
             db.execSQL("INSERT INTO spares(name,price) VALUES('Korobka',100);");
             db.execSQL("INSERT INTO spares(name,price) VALUES('Rama',800);");
@@ -186,23 +181,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO repairs(name) VALUES('Ремонт двигателя');");
         db.execSQL("INSERT INTO repairs(name) VALUES('Ремонт коробки');");
 
-        db.execSQL("INSERT INTO "+RESPONSIBLE_TABLE_NAME+"("+RESPONSIBLE_COLUMN_NAME+","+RESPONSIBLE_COLUMN_SURNAME+") VALUES('Вася','Петров');");
-        db.execSQL("INSERT INTO "+RESPONSIBLE_TABLE_NAME+"("+RESPONSIBLE_COLUMN_NAME+","+RESPONSIBLE_COLUMN_SURNAME+") VALUES('Иван','Иванов');");
+        db.execSQL("INSERT INTO " + RESPONSIBLE_TABLE_NAME + "(" + RESPONSIBLE_COLUMN_NAME + "," + RESPONSIBLE_COLUMN_SURNAME + ") VALUES('Вася','Петров');");
+        db.execSQL("INSERT INTO " + RESPONSIBLE_TABLE_NAME + "(" + RESPONSIBLE_COLUMN_NAME + "," + RESPONSIBLE_COLUMN_SURNAME + ") VALUES('Иван','Иванов');");
 
-        db.execSQL("INSERT INTO "+ORGANIZATIONS_TABLE_NAME+"("+ORGANIZATIONS_COLUMN_NAME+","
-                +ORGANIZATIONS_COLUMN_ACCOUNT+","+ORGANIZATIONS_COLUMN_PHONE
-                +") VALUES('Корпорация юмора','Петровская25','88005553535');");
+        db.execSQL("INSERT INTO " + ORGANIZATIONS_TABLE_NAME + "(" + ORGANIZATIONS_COLUMN_NAME + ","
+                + ORGANIZATIONS_COLUMN_ACCOUNT + "," + ORGANIZATIONS_COLUMN_PHONE
+                + ") VALUES('Корпорация юмора','Петровская25','88005553535');");
 
-        db.execSQL("INSERT INTO "+ORGANIZATIONS_TABLE_NAME+"("+ORGANIZATIONS_COLUMN_NAME+","
-                +ORGANIZATIONS_COLUMN_ACCOUNT+","+ORGANIZATIONS_COLUMN_PHONE
-                +") VALUES('Корпорация зла 2','киев борщаговская 334','+380953334598');");
+        db.execSQL("INSERT INTO " + ORGANIZATIONS_TABLE_NAME + "(" + ORGANIZATIONS_COLUMN_NAME + ","
+                + ORGANIZATIONS_COLUMN_ACCOUNT + "," + ORGANIZATIONS_COLUMN_PHONE
+                + ") VALUES('Корпорация зла 2','киев борщаговская 334','+380953334598');");
 
 
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-initDB(db);
+        initDB(db);
     }
 
     @Override
@@ -211,42 +206,42 @@ initDB(db);
     }
 
 
-    public static ArrayList<Work> selectWorks(String where,String sort){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
-        Cursor c1 = sdb.query(WORKS_TABLE_NAME, new String[]{WORKS_COLUMN_ID, WORKS_COLUMN_NAME,WORKS_COLUMN_PRICE},
+    public static ArrayList<Work> selectWorks(String where, String sort) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        Cursor c1 = sdb.query(WORKS_TABLE_NAME, new String[]{WORKS_COLUMN_ID, WORKS_COLUMN_NAME, WORKS_COLUMN_PRICE},
                 where, null,
-                null, null, sort) ;
-        ArrayList <Work> worksList=new ArrayList<>();
+                null, null, sort);
+        ArrayList<Work> worksList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
                 do {
-                   Work work = new Work(Integer.parseInt(c1.getString(c1.getColumnIndex(WORKS_COLUMN_ID))),
-                            c1.getString(c1.getColumnIndex(WORKS_COLUMN_NAME)),Float.parseFloat(c1.getString(c1.getColumnIndex(WORKS_COLUMN_PRICE))));
+                    Work work = new Work(Integer.parseInt(c1.getString(c1.getColumnIndex(WORKS_COLUMN_ID))),
+                            c1.getString(c1.getColumnIndex(WORKS_COLUMN_NAME)), Float.parseFloat(c1.getString(c1.getColumnIndex(WORKS_COLUMN_PRICE))));
 
-                   worksList.add(work);
+                    worksList.add(work);
                 } while (c1.moveToNext());
             }
             c1.close();
         }
 
         sdb.close();
-        return  worksList;
+        return worksList;
     }
 
 
-    public static ArrayList<Repair> selectRepairs(String where,String sort){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+    public static ArrayList<Repair> selectRepairs(String where, String sort) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
         Cursor c1 = sdb.query(REPAIRS_TABLE_NAME, new String[]{REPAIRS_COLUMN_ID, REPAIRS_COLUMN_NAME},
                 where, null,
-                null, null, sort) ;
-        ArrayList <Repair> list=new ArrayList<>();
+                null, null, sort);
+        ArrayList<Repair> list = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
                 do {
                     Repair repair = new Repair(Integer.parseInt(c1.getString(c1.getColumnIndex(WORKS_COLUMN_ID))),
                             c1.getString(c1.getColumnIndex(WORKS_COLUMN_NAME)));
 
-                   list.add(repair);
+                    list.add(repair);
                 } while (c1.moveToNext());
             }
             c1.close();
@@ -256,17 +251,17 @@ initDB(db);
         return list;
     }
 
-    public static ArrayList<Spare> selectSpares(String sort){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
-        Cursor c1 = sdb.query(SPARES_TABLE_NAME, new String[]{SPARES_COLUMN_ID, SPARES_COLUMN_NAME,SPARES_COLUMN_PRICE},
+    public static ArrayList<Spare> selectSpares(String sort) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        Cursor c1 = sdb.query(SPARES_TABLE_NAME, new String[]{SPARES_COLUMN_ID, SPARES_COLUMN_NAME, SPARES_COLUMN_PRICE},
                 null, null,
-                null, null, sort) ;
-        ArrayList <Spare> sparesList=new ArrayList<>();
+                null, null, sort);
+        ArrayList<Spare> sparesList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
                 do {
                     Spare contactListItems = new Spare(Integer.parseInt(c1.getString(c1.getColumnIndex(SPARES_COLUMN_ID))),
-                            c1.getString(c1.getColumnIndex(SPARES_COLUMN_NAME)),Float.parseFloat(c1.getString(c1.getColumnIndex(SPARES_COLUMN_PRICE))));
+                            c1.getString(c1.getColumnIndex(SPARES_COLUMN_NAME)), Float.parseFloat(c1.getString(c1.getColumnIndex(SPARES_COLUMN_PRICE))));
 
 
                     sparesList.add(contactListItems);
@@ -277,39 +272,38 @@ initDB(db);
         }
 
         sdb.close();
-        return  sparesList;
+        return sparesList;
     }
 
-    public static ArrayList<Spare> selectSpares(String sort,int workId){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
-        Cursor c1=null;
+    public static ArrayList<Spare> selectSpares(String sort, int workId) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        Cursor c1 = null;
 
-        if(workId!=0) {
-            String srt="";
-            if (sort!=null){
-                srt="ORDER BY "+sort;
+        if (workId != 0) {
+            String srt = "";
+            if (sort != null) {
+                srt = "ORDER BY " + sort;
             }
             String query = "SELECT " + SPARES_COLUMN_ID + ", " + SPARES_COLUMN_NAME + ", " + SPARES_COLUMN_PRICE
                     + " FROM " + SPARES_TABLE_NAME + " WHERE " + SPARES_COLUMN_ID
                     + " IN (SELECT " + WORKS_SPARES_SPARE_ID + " FROM " + WORKS_SPARES_TABLE_NAME
-                    + " WHERE " + WORKS_SPARES_WORK_ID + " = " + workId + ") "+srt;
+                    + " WHERE " + WORKS_SPARES_WORK_ID + " = " + workId + ") " + srt;
 
             c1 = sdb.rawQuery(query, null);
 
-           Log.e("count ",c1.getCount()+"");
-        }else {
+            Log.e("count ", c1.getCount() + "");
+        } else {
             c1 = sdb.query(SPARES_TABLE_NAME, new String[]{SPARES_COLUMN_ID, SPARES_COLUMN_NAME, SPARES_COLUMN_PRICE},
                     null, null,
                     null, null, sort);
         }
 
-        ArrayList <Spare> sparesList=new ArrayList<>();
+        ArrayList<Spare> sparesList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
                 do {
                     Spare contactListItems = new Spare(Integer.parseInt(c1.getString(c1.getColumnIndex(SPARES_COLUMN_ID))),
-                            c1.getString(c1.getColumnIndex(SPARES_COLUMN_NAME)),Float.parseFloat(c1.getString(c1.getColumnIndex(SPARES_COLUMN_PRICE))));
-
+                            c1.getString(c1.getColumnIndex(SPARES_COLUMN_NAME)), Float.parseFloat(c1.getString(c1.getColumnIndex(SPARES_COLUMN_PRICE))));
 
                     sparesList.add(contactListItems);
 
@@ -319,36 +313,36 @@ initDB(db);
         }
 
         sdb.close();
-        return  sparesList;
+        return sparesList;
     }
 
-public static void updateSpares(String table,ContentValues cv, String field, String[] bind){
-    SQLiteDatabase sdb= sInstance.getWritableDatabase();
-    sdb.update(SPARES_TABLE_NAME, cv, field,
-            bind);
+    public static void updateSpares(String table, ContentValues cv, String field, String[] bind) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        sdb.update(SPARES_TABLE_NAME, cv, field,
+                bind);
 
-    sdb.close();
-}
+        sdb.close();
+    }
 
-    public static void deleteSpares(String table,String whereClause, String whereArgs[]){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+    public static void deleteSpares(String table, String whereClause, String whereArgs[]) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
         sdb.delete(table, whereClause, whereArgs);
 
         sdb.close();
     }
 
-    public static long addSpares(String  columnHack, ContentValues cv ){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
-        long lastId= sdb.insert(SPARES_TABLE_NAME, columnHack, cv);
+    public static long addSpares(String columnHack, ContentValues cv) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        long lastId = sdb.insert(SPARES_TABLE_NAME, columnHack, cv);
 
         sdb.close();
 
         return lastId;
     }
 
-    public static long addWorksSpares(String  columnHack, ContentValues cv ){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
-      long lastId= sdb.insert(WORKS_SPARES_TABLE_NAME, columnHack,cv);
+    public static long addWorksSpares(String columnHack, ContentValues cv) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        long lastId = sdb.insert(WORKS_SPARES_TABLE_NAME, columnHack, cv);
 
         sdb.close();
         return lastId;
@@ -356,20 +350,21 @@ public static void updateSpares(String table,ContentValues cv, String field, Str
 
     /**
      * responsible part
+     *
      * @param sort
      * @return
      */
-    public static ArrayList<Responsible> selectResponsible(String sort){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+    public static ArrayList<Responsible> selectResponsible(String sort) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
         Cursor c1 = sdb.query(RESPONSIBLE_TABLE_NAME, new String[]{RESPONSIBLE_COLUMN_ID, RESPONSIBLE_COLUMN_NAME, RESPONSIBLE_COLUMN_SURNAME},
                 null, null,
-                null, null, sort) ;
-        ArrayList <Responsible> responsibleList=new ArrayList<>();
+                null, null, sort);
+        ArrayList<Responsible> responsibleList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
                 do {
                     Responsible responsible = new Responsible(Integer.parseInt(c1.getString(c1.getColumnIndex(RESPONSIBLE_COLUMN_ID))),
-                            c1.getString(c1.getColumnIndex(RESPONSIBLE_COLUMN_NAME)),c1.getString(c1.getColumnIndex(RESPONSIBLE_COLUMN_SURNAME)));
+                            c1.getString(c1.getColumnIndex(RESPONSIBLE_COLUMN_NAME)), c1.getString(c1.getColumnIndex(RESPONSIBLE_COLUMN_SURNAME)));
 
 
                     responsibleList.add(responsible);
@@ -379,12 +374,12 @@ public static void updateSpares(String table,ContentValues cv, String field, Str
         }
         c1.close();
         sdb.close();
-        return  responsibleList;
+        return responsibleList;
     }
 
-    public static long addResponsible(String  columnHack, ContentValues cv ){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
-        long lastId= sdb.insert(RESPONSIBLE_TABLE_NAME, columnHack, cv);
+    public static long addResponsible(String columnHack, ContentValues cv) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        long lastId = sdb.insert(RESPONSIBLE_TABLE_NAME, columnHack, cv);
 
         sdb.close();
 
@@ -392,14 +387,15 @@ public static void updateSpares(String table,ContentValues cv, String field, Str
     }
 
 
-    public static void deleteResponsible(String whereClause, String whereArgs[]){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+    public static void deleteResponsible(String whereClause, String whereArgs[]) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
         sdb.delete(RESPONSIBLE_TABLE_NAME, whereClause, whereArgs);
 
         sdb.close();
     }
-    public static void updateResponsible(ContentValues cv, String field, String[] bind){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+
+    public static void updateResponsible(ContentValues cv, String field, String[] bind) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
         sdb.update(RESPONSIBLE_TABLE_NAME, cv, field,
                 bind);
 
@@ -411,17 +407,17 @@ public static void updateSpares(String table,ContentValues cv, String field, Str
      * Organizations part
      */
 
-    public static ArrayList<Organization> selectOrganizations(String sort){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+    public static ArrayList<Organization> selectOrganizations(String sort) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
         Cursor c1 = sdb.query(ORGANIZATIONS_TABLE_NAME, new String[]{ORGANIZATIONS_COLUMN_ID, ORGANIZATIONS_COLUMN_NAME, ORGANIZATIONS_COLUMN_ACCOUNT, ORGANIZATIONS_COLUMN_PHONE},
                 null, null,
-                null, null, sort) ;
-        ArrayList <Organization> organizationsList=new ArrayList<>();
+                null, null, sort);
+        ArrayList<Organization> organizationsList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
                 do {
-                   Organization organization = new Organization(Integer.parseInt(c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_ID))),
-                            c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_NAME)),c1.getString(c1.getColumnIndex( ORGANIZATIONS_COLUMN_ACCOUNT)),c1.getString(c1.getColumnIndex( ORGANIZATIONS_COLUMN_PHONE)));
+                    Organization organization = new Organization(Integer.parseInt(c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_ID))),
+                            c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_NAME)), c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_ACCOUNT)), c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_PHONE)));
 
 
                     organizationsList.add(organization);
@@ -434,9 +430,9 @@ public static void updateSpares(String table,ContentValues cv, String field, Str
         return organizationsList;
     }
 
-    public static long addOrganization(String  columnHack, ContentValues cv ){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
-        long lastId= sdb.insert(ORGANIZATIONS_TABLE_NAME, columnHack, cv);
+    public static long addOrganization(String columnHack, ContentValues cv) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        long lastId = sdb.insert(ORGANIZATIONS_TABLE_NAME, columnHack, cv);
 
         sdb.close();
 
@@ -444,17 +440,89 @@ public static void updateSpares(String table,ContentValues cv, String field, Str
     }
 
 
-    public static void deleteOrganization(String whereClause, String whereArgs[]){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+    public static void deleteOrganization(String whereClause, String whereArgs[]) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
         sdb.delete(ORGANIZATIONS_TABLE_NAME, whereClause, whereArgs);
 
         sdb.close();
     }
-    public static void updateOrganization(ContentValues cv, String field, String[] bind){
-        SQLiteDatabase sdb= sInstance.getWritableDatabase();
+
+    public static void updateOrganization(ContentValues cv, String field, String[] bind) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
         sdb.update(ORGANIZATIONS_TABLE_NAME, cv, field,
                 bind);
 
         sdb.close();
     }
+
+    /**
+     * repairs part
+     * @param sort
+     * @return
+     */
+    public static ArrayList<Repair> selectRepairs(String sort) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        Cursor c1 = sdb.query(REPAIRS_TABLE_NAME, new String[]{REPAIRS_COLUMN_ID, REPAIRS_COLUMN_NAME},
+                null, null,
+                null, null, sort);
+        ArrayList<Repair> repairsList = new ArrayList<>();
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                   Repair repair = new Repair(Integer.parseInt(c1.getString(c1.getColumnIndex(REPAIRS_COLUMN_ID))),
+                            c1.getString(c1.getColumnIndex(REPAIRS_COLUMN_NAME)));
+
+                    repairsList.add(repair);
+
+                } while (c1.moveToNext());
+            }
+        }
+        c1.close();
+        sdb.close();
+        return repairsList;
+    }
+
+    /**
+     * works part
+     */
+
+
+    public static void updateWork(ContentValues cv, String field, String[] bind) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+
+
+
+
+      //  sdb.delete(WORKS_SPARES_TABLE_NAME,)
+
+        sdb.update(WORKS_TABLE_NAME, cv, field,
+                bind);
+
+        sdb.close();
+    }
+
+    public static long addWork(String columnHack, ContentValues cv) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        long lastId = sdb.insert(WORKS_TABLE_NAME, columnHack, cv);
+
+        sdb.close();
+
+        return lastId;
+    }
+
+    public static void deleteWork(String whereClause, String whereArgs[]) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        sdb.delete(WORKS_TABLE_NAME, whereClause, whereArgs);
+
+        sdb.close();
+    }
+
+    public static void deleteWorksSpares(String whereClause, String whereArgs[]) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        sdb.delete(WORKS_SPARES_TABLE_NAME, whereClause, whereArgs);
+
+        sdb.close();
+    }
+
+
 }

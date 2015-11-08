@@ -10,30 +10,30 @@ public class Responsible {
     private String surname;
 
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public Responsible(int id, String name, String surname){
-        this.name=name;
-        this.id=id;
-        this.surname=surname;
+    public Responsible(int id, String name, String surname) {
+        this.name = name;
+        this.id = id;
+        this.surname = surname;
     }
 
 
-    public void setName(String name){
-        this.name=name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setSurname(String surname){
-        this.surname=surname;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
-    public String getSurname(){
+    public String getSurname() {
         return surname;
     }
 }

@@ -92,11 +92,11 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-RelativeLayout rl=(RelativeLayout) inflater.inflate(
-        R.layout.fragment_navigation_drawer, container, false);
-       // mDrawerListView = (ListView) inflater.inflate(
-          //      R.layout.fragment_navigation_drawer, container, false);
-        mDrawerListView=(ListView)rl.findViewById(R.id.drawer_list);
+        RelativeLayout rl = (RelativeLayout) inflater.inflate(
+                R.layout.fragment_navigation_drawer, container, false);
+        // mDrawerListView = (ListView) inflater.inflate(
+        //      R.layout.fragment_navigation_drawer, container, false);
+        mDrawerListView = (ListView) rl.findViewById(R.id.drawer_list);
 
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -281,7 +281,7 @@ RelativeLayout rl=(RelativeLayout) inflater.inflate(
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public  interface NavigationDrawerCallbacks {
+    public interface NavigationDrawerCallbacks {
         /**
          * Called when an item in the navigation drawer is selected.
          */

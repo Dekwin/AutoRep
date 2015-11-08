@@ -25,13 +25,12 @@ import com.dekwin.autorep.fragments.WorksFragment;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks,AddWorksFragment.FragmentIntListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, AddWorksFragment.FragmentIntListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
 
 
     /**
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         this.deleteDatabase("repair_db.sqlite");
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
 
 
-        for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
 
@@ -114,7 +112,7 @@ public class MainActivity extends AppCompatActivity
     public void getWorksList(List<Work> works) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-       SparesFragment sf=(SparesFragment)fragmentManager.findFragmentById(R.id.container);
+        SparesFragment sf = (SparesFragment) fragmentManager.findFragmentById(R.id.container);
 
         sf.getWorksIdFromDialog(works);
     }
@@ -151,6 +149,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 */
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -166,23 +165,23 @@ public class MainActivity extends AppCompatActivity
          * number.
          */
         public static Fragment newInstance(int sectionNumber) {
-            Log.e("super","sect "+sectionNumber);
-            Fragment fragment=null;
-            switch (sectionNumber){
+            Log.e("super", "sect " + sectionNumber);
+            Fragment fragment = null;
+            switch (sectionNumber) {
                 case 1:
-                    fragment=new SparesFragment();
+                    fragment = new SparesFragment();
                     break;
                 case 2:
-                    fragment=new ResponsibleFragment();
+                    fragment = new ResponsibleFragment();
                     break;
                 case 3:
-                    fragment=new OrganizationsFragment();
+                    fragment = new OrganizationsFragment();
                     break;
                 case 4:
-                    fragment=new WorksFragment();
+                    fragment = new WorksFragment();
                     break;
                 default:
-                    fragment=new WorksFragment();
+                    fragment = new WorksFragment();
                     break;
             }
 
@@ -195,31 +194,31 @@ public class MainActivity extends AppCompatActivity
 
         public PlaceholderFragment() {
         }
+
         private ListView tbl;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.spare_info, container, false);
             //tbl = (ListView) findViewById(R.id.spares_list1);
 
-            tbl = (ListView)rootView.findViewById(R.id.spares_list);
+            tbl = (ListView) rootView.findViewById(R.id.spares_list);
 
-            if (tbl==null)
-                Log.e("first","null");
+            if (tbl == null)
+                Log.e("first", "null");
 
 
             return rootView;
         }
 
 
-
-
-                @Override
-                public void onAttach(Activity activity) {
-                    super.onAttach(activity);
-                    ((MainActivity) activity).onSectionAttached(
-                            getArguments().getInt(ARG_SECTION_NUMBER));
-                }
-            }
-
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((MainActivity) activity).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER));
         }
+    }
+
+}

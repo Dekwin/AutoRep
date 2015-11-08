@@ -40,12 +40,13 @@ public class OrganizationsFragment extends Fragment {
     ArrayList<Organization> organizationsList;
     OrganizationsAdapter organizationsListAdapter;
     private ListView organizationsListView;
-    View rootView ;
+    View rootView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.organization_info, container, false);
-        organizationsListView = (ListView)rootView.findViewById(R.id.organization_info_list);
+        organizationsListView = (ListView) rootView.findViewById(R.id.organization_info_list);
         setHasOptionsMenu(true);
         showOrganizations(getActivity());
         setSortHeader(getActivity());
@@ -80,10 +81,9 @@ public class OrganizationsFragment extends Fragment {
     }
 
 
-
-    public void showOrganizations(final Context ctx){
+    public void showOrganizations(final Context ctx) {
         organizationsList = DatabaseHelper.selectOrganizations(null);
-        organizationsListAdapter = new OrganizationsAdapter(  ctx, organizationsList);
+        organizationsListAdapter = new OrganizationsAdapter(ctx, organizationsList);
         organizationsListView.setLongClickable(true);
         organizationsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> listView, View v, int position, long id) {
@@ -160,10 +160,8 @@ public class OrganizationsFragment extends Fragment {
     }
 
 
-
-
-    public void setSortHeader(final Context ctx){
-        TextView headerName= (TextView)rootView.findViewById(R.id.organization_info_header_name);
+    public void setSortHeader(final Context ctx) {
+        TextView headerName = (TextView) rootView.findViewById(R.id.organization_info_header_name);
         headerName.setOnTouchListener(new View.OnTouchListener() {
             private boolean asc = true;
 
@@ -185,7 +183,7 @@ public class OrganizationsFragment extends Fragment {
             }
         });
 
-        TextView headerAccount= (TextView)rootView.findViewById(R.id.organization_info_header_account);
+        TextView headerAccount = (TextView) rootView.findViewById(R.id.organization_info_header_account);
         headerAccount.setOnTouchListener(new View.OnTouchListener() {
 
             private boolean asc = true;
@@ -210,7 +208,7 @@ public class OrganizationsFragment extends Fragment {
             }
         });
 
-        TextView headerPhone= (TextView)rootView.findViewById(R.id.organization_info_header_phone);
+        TextView headerPhone = (TextView) rootView.findViewById(R.id.organization_info_header_phone);
         headerPhone.setOnTouchListener(new View.OnTouchListener() {
 
             private boolean asc = true;
@@ -238,11 +236,7 @@ public class OrganizationsFragment extends Fragment {
     }
 
 
-
-
-
-
-    public AlertDialog.Builder setAddOrganization(final Context ctx){
+    public AlertDialog.Builder setAddOrganization(final Context ctx) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.organizations_dialog, null);
@@ -262,7 +256,7 @@ public class OrganizationsFragment extends Fragment {
                 cvorganization.put(DatabaseHelper.ORGANIZATIONS_COLUMN_ACCOUNT, account.getText().toString());
                 cvorganization.put(DatabaseHelper.ORGANIZATIONS_COLUMN_PHONE, phone.getText().toString());
                 long lastOrganizationId = DatabaseHelper.addOrganization(null, cvorganization);
-                Organization organization = new Organization((int) lastOrganizationId, name.getText().toString(), account.getText().toString(),phone.getText().toString());
+                Organization organization = new Organization((int) lastOrganizationId, name.getText().toString(), account.getText().toString(), phone.getText().toString());
 
 
                 //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
@@ -283,8 +277,6 @@ public class OrganizationsFragment extends Fragment {
 
             }
         });
-
-
 
 
         return builder;

@@ -36,12 +36,13 @@ public class ResponsibleFragment extends Fragment {
     ArrayList<Responsible> responsibleList;
     ResponsibleAdapter responsibleListAdapter;
     private ListView responsibleListView;
-    View rootView ;
+    View rootView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.responsible_info, container, false);
-        responsibleListView = (ListView)rootView.findViewById(R.id.responsible_info_list);
+        responsibleListView = (ListView) rootView.findViewById(R.id.responsible_info_list);
         setHasOptionsMenu(true);
         showResponsible(getActivity());
         setSortHeader(getActivity());
@@ -76,10 +77,9 @@ public class ResponsibleFragment extends Fragment {
     }
 
 
-
-    public void showResponsible(final Context ctx){
+    public void showResponsible(final Context ctx) {
         responsibleList = DatabaseHelper.selectResponsible(null);
-        responsibleListAdapter = new ResponsibleAdapter(  ctx, responsibleList);
+        responsibleListAdapter = new ResponsibleAdapter(ctx, responsibleList);
         responsibleListView.setLongClickable(true);
         responsibleListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> listView, View v, int position, long id) {
@@ -148,10 +148,8 @@ public class ResponsibleFragment extends Fragment {
     }
 
 
-
-
-    public void setSortHeader(final Context ctx){
-        TextView headerId= (TextView)rootView.findViewById(R.id.responsible_info_header_name);
+    public void setSortHeader(final Context ctx) {
+        TextView headerId = (TextView) rootView.findViewById(R.id.responsible_info_header_name);
         headerId.setOnTouchListener(new View.OnTouchListener() {
             private boolean asc = true;
 
@@ -173,7 +171,7 @@ public class ResponsibleFragment extends Fragment {
             }
         });
 
-        TextView headerName= (TextView)rootView.findViewById(R.id.responsible_info_header_surname);
+        TextView headerName = (TextView) rootView.findViewById(R.id.responsible_info_header_surname);
         headerName.setOnTouchListener(new View.OnTouchListener() {
 
             private boolean asc = true;
@@ -200,11 +198,7 @@ public class ResponsibleFragment extends Fragment {
     }
 
 
-
-
-
-
-    public AlertDialog.Builder setAddResponsible(final Context ctx){
+    public AlertDialog.Builder setAddResponsible(final Context ctx) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.responsible_add, null);
@@ -243,8 +237,6 @@ public class ResponsibleFragment extends Fragment {
 
             }
         });
-
-
 
 
         return builder;

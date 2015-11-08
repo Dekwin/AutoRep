@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class AddWorksFragment extends DialogFragment {
 
-    public interface FragmentIntListener{
+    public interface FragmentIntListener {
         void getWorksList(List<Work> works);
     }
 
@@ -58,8 +58,8 @@ public class AddWorksFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.works_info, container, false);
         //tbl = (ListView) findViewById(R.id.spares_list1);
 
-        if (getDialog()!=null)
-        getDialog().setTitle("Выбор работ");
+        if (getDialog() != null)
+            getDialog().setTitle("Выбор работ");
 
         createGroupList();
 
@@ -89,35 +89,34 @@ public class AddWorksFragment extends DialogFragment {
 
         //fragmentIntListener.retArg("inner frag!!");
 
-       Button acceptButton=(Button) rootView.findViewById(R.id.works_info_accept_button);
+        Button acceptButton = (Button) rootView.findViewById(R.id.works_info_accept_button);
         acceptButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-              //  getActivity().getSupportFragmentManager().beginTransaction().remove(WorksFragment.this).commit();
+                //  getActivity().getSupportFragmentManager().beginTransaction().remove(WorksFragment.this).commit();
 
                 //getActivity().getSupportFragmentManager().popBackStackImmediate();
-                List<Work> worksId=new ArrayList<>();
+                List<Work> worksId = new ArrayList<>();
 
-                for (Map.Entry<String,List< Work>> entry :repairCollection.entrySet())
-                {
-                    for(Work w : entry.getValue())
-                    if (w.isSelected())
-                   worksId.add(w);
+                for (Map.Entry<String, List<Work>> entry : repairCollection.entrySet()) {
+                    for (Work w : entry.getValue())
+                        if (w.isSelected())
+                            worksId.add(w);
                 }
 
-               // for (Work wrk: repairCollection)
+                // for (Work wrk: repairCollection)
                 fragmentIntListener.getWorksList(worksId);
-               // getDialog().dismiss();
+                // getDialog().dismiss();
                 getDialog().hide();
                 //getActivity().onBackPressed();
             }
         });
 
 
-
         return rootView;
 
     }
+
     List<Repair> groupList;
     List<String> childList;
     Map<String, List<Work>> repairCollection;
@@ -125,11 +124,11 @@ public class AddWorksFragment extends DialogFragment {
 
     private void createGroupList() {
         groupList = new ArrayList<>();
-       // groupList.add(new Repair(1,"HP"));
+        // groupList.add(new Repair(1,"HP"));
         //groupList.add(new Repair(2,"Dell"));
-       // groupList.add(new Repair(1,"Lenovo"));
-        groupList= DatabaseHelper.selectRepairs(null,null);
-       // groupList.add("Sony");
+        // groupList.add(new Repair(1,"Lenovo"));
+        groupList = DatabaseHelper.selectRepairs(null, null);
+        // groupList.add("Sony");
         //groupList.add("HCL");
         //groupList.add("Samsung");
     }
@@ -138,21 +137,20 @@ public class AddWorksFragment extends DialogFragment {
         // preparing laptops collection(child)
 
 
-
         repairCollection = new LinkedHashMap<>();
 
-       // DatabaseHelper.selectRepairs(null,null);
+        // DatabaseHelper.selectRepairs(null,null);
 
         //DatabaseHelper.selectWorks(DatabaseHelper.REPAIRS_COLUMN_ID+" = ",null);
-List<Work> wrk;
+        List<Work> wrk;
         for (Repair repair : groupList) {
 
-            wrk=DatabaseHelper.selectWorks(DatabaseHelper.WORKS_COLUMN_REPAIRSID+" = "+repair.getId(),null);
+            wrk = DatabaseHelper.selectWorks(DatabaseHelper.WORKS_COLUMN_REPAIRSID + " = " + repair.getId(), null);
 
-            if (wrk!=null) {
+            if (wrk != null) {
                 Log.e("wrk", " wrk:: " + wrk);
-                for (Work w : wrk){
-                    Log.e("work ",w.getName());
+                for (Work w : wrk) {
+                    Log.e("work ", w.getName());
                 }
             }
             repairCollection.put(repair.getName(), wrk);
@@ -160,8 +158,6 @@ List<Work> wrk;
 
 
     }
-
-
 
 
 }

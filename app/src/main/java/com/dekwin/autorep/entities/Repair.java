@@ -6,22 +6,27 @@ package com.dekwin.autorep.entities;
 public class Repair {
     private int id;
     private String name;
-    public String getName(){
+
+    public String getName() {
         return name;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public Repair(int id, String name){
-        this.name=name;
-        this.id=id;
+    public Repair(int id, String name) {
+        this.name = name;
+        this.id = id;
 
     }
 
+    @Override
+    public String toString(){
+        return this.getName();
+    }
 
-    public void setName(String name){
-        this.name=name;
+    public void setName(String name) {
+        this.name = name;
     }
 }
