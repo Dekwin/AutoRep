@@ -24,12 +24,12 @@ public class WorksAdapter extends BaseExpandableListAdapter {
 
     private Activity context;
 
-    protected Map<String, List<Work>> laptopCollections;
+    protected Map<Repair, List<Work>> laptopCollections;
     private List<Repair> laptops;
 
 
     public WorksAdapter(Activity context, List<Repair> laptops,
-                        Map<String, List<Work>> laptopCollections) {
+                        Map<Repair, List<Work>> laptopCollections) {
         this.context = context;
         this.laptopCollections = laptopCollections;
         this.laptops = laptops;
@@ -43,7 +43,7 @@ public class WorksAdapter extends BaseExpandableListAdapter {
     }
 
     public Object getChild(int groupPosition, int childPosition) {
-        return laptopCollections.get(laptops.get(groupPosition).getName()).get(childPosition);
+        return laptopCollections.get(laptops.get(groupPosition)).get(childPosition);
     }
 
     public long getChildId(int groupPosition, int childPosition) {
@@ -110,7 +110,7 @@ public class WorksAdapter extends BaseExpandableListAdapter {
     }
 
     public int getChildrenCount(int groupPosition) {
-        return laptopCollections.get(laptops.get(groupPosition).getName()).size();
+        return laptopCollections.get(laptops.get(groupPosition)).size();
     }
 
     public Object getGroup(int groupPosition) {

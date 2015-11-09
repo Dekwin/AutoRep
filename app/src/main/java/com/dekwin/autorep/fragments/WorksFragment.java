@@ -11,6 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -43,8 +46,8 @@ import java.util.Map;
  * Created by dekst on 07.11.2015.
  */
 public class WorksFragment extends Fragment {
-    ArrayList<Spare> list;
-    ArrayAdapter<String> listAdapter;
+    //ArrayList<Spare> list;
+   // ArrayAdapter<String> listAdapter;
     private ListView listView;
    private WorksAdapter wrkAdapter;
     @Override
@@ -75,8 +78,11 @@ public class WorksFragment extends Fragment {
                         groupPosition, childPosition);
 
                 Bundle args = new Bundle();
+
                 args.putBoolean("nomenu", true);
                 args.putInt("workId", selected.getId());
+                args.putFloat("workPrice", selected.getPrice());
+
                 SparesFragment sparesFragment = new SparesFragment();
                 sparesFragment.setArguments(args);
                 FragmentManager fragmentManager = getFragmentManager();
@@ -91,7 +97,9 @@ public class WorksFragment extends Fragment {
 
 
         //fragmentIntListener.retArg("inner frag!!");
-        addWork(getActivity());
+        editWorks(getActivity());
+
+        setHasOptionsMenu(true);
 
         return rootView;
 
@@ -99,18 +107,14 @@ public class WorksFragment extends Fragment {
 
     List<Repair> groupList;
     List<String> childList;
-    Map<String, List<Work>> repairCollection;
+    Map<Repair, List<Work>> repairCollection;
     ExpandableListView expListView;
 
     private void createGroupList() {
         groupList = new ArrayList<>();
-        // groupList.add(new Repair(1,"HP"));
-        //groupList.add(new Repair(2,"Dell"));
-        // groupList.add(new Repair(1,"Lenovo"));
+
         groupList = DatabaseHelper.selectRepairs(null, null);
-        // groupList.add("Sony");
-        //groupList.add("HCL");
-        //groupList.add("Samsung");
+
     }
 
     private void createCollection() {
@@ -133,13 +137,15 @@ public class WorksFragment extends Fragment {
                     Log.e("work ", w.getName());
                 }
             }
-            repairCollection.put(repair.getName(), wrk);
+            repairCollection.put(repair, wrk);
         }
 
 
     }
 
-    private void addWork(final Context ctx){
+
+
+    private void editWorks(final Context ctx){
         expListView.setLongClickable(true);
         expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -150,6 +156,7 @@ public class WorksFragment extends Fragment {
 
                     final Work cursor = (Work) parent.getItemAtPosition(position);
 
+                    // parent.get
 
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     final LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -158,6 +165,9 @@ public class WorksFragment extends Fragment {
 
                     EditText name = (EditText) dialogView.findViewById(R.id.works_add_name);
                     name.setText(cursor.getName());
+
+                    final EditText price = (EditText) dialogView.findViewById(R.id.works_add_price);
+                    price.setText(cursor.getPrice()+"");
 
                     final ArrayList<Spare> tmpList1 = DatabaseHelper.selectSpares(null);
                     final ArrayList<Spare> tmpList2 = DatabaseHelper.selectSpares(null, cursor.getId());
@@ -187,32 +197,45 @@ public class WorksFragment extends Fragment {
 
                     spares.setAdapter(sparesCheckBoxAdapter);
 
-                    ArrayList<Repair> repairs = DatabaseHelper.selectRepairs(null);
+                    final ArrayList<Repair> repairs = DatabaseHelper.selectRepairs(null);
 
-                    ArrayAdapter<Repair> adapter = new ArrayAdapter<Repair>(getActivity(), android.R.layout.simple_spinner_item, repairs);
+                    final ArrayAdapter<Repair> adapter = new ArrayAdapter<Repair>(getActivity(), android.R.layout.simple_spinner_item, repairs);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                     final Spinner spinner = (Spinner) dialogView.findViewById(R.id.works_add_spinner);
                     spinner.setAdapter(adapter);
 
+                    final Repair groupRepair = (Repair) wrkAdapter.getGroup(groupPosition);
+                    //   List<Repair> reps= DatabaseHelper.selectRepairs(DatabaseHelper.REPAIRS_COLUMN_ID + " = " + cursor.getRepairsId(), null);
+                    //  Log.e("repairs id ",cursor.getRepairsId()+"");
+                    //   final Repair rep = reps.get(0);
+                    for (int i = 0; i < repairs.size(); i++)
+                        if (groupRepair.getId() == repairs.get(i).getId()) {
+                            spinner.setSelection(i);
+                            break;
+                        }
+
+
                     builder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
+
                             // TODO Auto-generated method stub
                             EditText name = (EditText) ((Dialog) dialog).findViewById(R.id.works_add_name);
 
                             //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
                             ContentValues cv = new ContentValues();
                             cv.put(DatabaseHelper.WORKS_COLUMN_NAME, name.getText().toString());
+                            cv.put(DatabaseHelper.WORKS_COLUMN_PRICE, price.getText().toString());
                             //add work!!!!
 
                             cursor.setName(name.getText().toString());
+                            cursor.setPrice(Float.parseFloat(price.getText().toString()));
                             DatabaseHelper.updateWork(cv, DatabaseHelper.WORKS_COLUMN_ID + " = ?", new String[]{cursor.getId() + ""});
 
                             DatabaseHelper.deleteWorksSpares(DatabaseHelper.WORKS_SPARES_WORK_ID + " = " + cursor.getId(), null);
-
-
 
 
                             for (Spare spare : tmpList1) {
@@ -224,9 +247,39 @@ public class WorksFragment extends Fragment {
                                 }
                             }
 
-                            //repairCollection.get(cursor.getName());
+                            //namellection.get(cursor.getName());
                             //    listAdapter.notifyDataSetChanged();
+
+
+                            Repair selectedRepair = (Repair) spinner.getSelectedItem();
+                            if (selectedRepair != null&&groupRepair.getId()!=selectedRepair.getId()) {
+                                cv.clear();
+                                cv.put(DatabaseHelper.WORKS_COLUMN_REPAIRSID, selectedRepair.getId());
+
+
+                                repairCollection.get(groupRepair).remove(cursor);
+                                for (Repair rep : repairCollection.keySet()) {
+                                    if (rep.getId() == selectedRepair.getId()) {
+                                        repairCollection.get(rep).add(cursor);
+                                        cursor.setRepairsId(rep.getId());
+                                        break;
+                                    }
+                                }
+
+                                /*if ( repairCollection.get(selectedRepair)==null)
+                                  Log.e("selectedRepair)==null"," null");else
+                                repairCollection.get(selectedRepair).add(cursor);
+                                */
+
+
+                                //workList.remove(0);
+                                // repairCollection.put(selectedRepair.getName(),cursor);
+                                int res = DatabaseHelper.updateWork(cv, DatabaseHelper.WORKS_COLUMN_ID + " = ?", new String[]{cursor.getId() + ""});
+                                Log.e("selected item= ", "updated res: " + res);
+                            } else Log.e("selected item= ", "null");
+
                             wrkAdapter.notifyDataSetChanged();
+                            // adapter.notifyDataSetChanged();
 
 
 
@@ -249,20 +302,29 @@ public class WorksFragment extends Fragment {
                         }
                     });
 
-                    //  ((EditText) dialogView.findViewById(R.id.works_add_name)).setText(cursor.getName());
-                    //    ((EditText) dialogView.findViewById(R.id.responsible_add_surname)).setText(cursor.getSurname());
+
+                    builder.setNeutralButton("Удалить", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO Auto-generated method stub
+                            //retval = 0;
+                            Toast.makeText(ctx, "Deleted. id: " + cursor.getId()
+                                    + ", name: " + cursor.getName(), Toast.LENGTH_SHORT).show();
+
+                            // list.remove(cursor);
+                            repairCollection.get(groupRepair).remove(cursor);
+
+                            wrkAdapter.notifyDataSetChanged();
+                            DatabaseHelper.deleteWorksSpares(DatabaseHelper.WORKS_SPARES_WORK_ID + " = " + cursor.getId(), null);
+                            DatabaseHelper.deleteWork(DatabaseHelper.WORKS_COLUMN_ID+" = "+cursor.getId(),null);
+
+                        }
+                    });
+
                     builder.show();
 
-                    // Return true as we are handling the event.
 
-
-                    /*
-                    final AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-                    final LayoutInflater inflater1 = getActivity().getLayoutInflater();
-                    View dialogView1 = inflater1.inflate(R.layout.works_add, null);
-                    builder1.setView(dialogView1);
-                    builder1.show();
-                    */
 
 
                     return true;
@@ -271,6 +333,8 @@ public class WorksFragment extends Fragment {
                 return false;
             }
         });
+
+
         /*
         expListView.setLongClickable(true);
         expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -346,5 +410,123 @@ public class WorksFragment extends Fragment {
         */
     }
 
+    private AlertDialog.Builder setAddWork(final Context ctx) {
+
+
+        // parent.get
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.works_add, null);
+        builder.setView(dialogView);
+
+        EditText name = (EditText) dialogView.findViewById(R.id.works_add_name);
+
+        final EditText price = (EditText) dialogView.findViewById(R.id.works_add_price);
+
+        final ArrayList<Spare> tmpList1 = DatabaseHelper.selectSpares(null);
+
+
+        // list = tmpList1;
+
+
+        ListView spares = (ListView) dialogView.findViewById(R.id.works_add_spares);
+        final SparesCheckBoxAdapter sparesCheckBoxAdapter = new SparesCheckBoxAdapter(getActivity(), tmpList1);
+
+        spares.setAdapter(sparesCheckBoxAdapter);
+
+        final ArrayList<Repair> repairs = DatabaseHelper.selectRepairs(null);
+
+        final ArrayAdapter<Repair> adapter = new ArrayAdapter<Repair>(getActivity(), android.R.layout.simple_spinner_item, repairs);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        final Spinner spinner = (Spinner) dialogView.findViewById(R.id.works_add_spinner);
+        spinner.setAdapter(adapter);
+
+
+        builder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+                // TODO Auto-generated method stub
+                EditText name = (EditText) ((Dialog) dialog).findViewById(R.id.works_add_name);
+                EditText price = (EditText) ((Dialog) dialog).findViewById(R.id.works_add_price);
+
+                //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
+                ContentValues cv = new ContentValues();
+                cv.put(DatabaseHelper.WORKS_COLUMN_NAME, name.getText().toString());
+                cv.put(DatabaseHelper.WORKS_COLUMN_PRICE, price.getText().toString());
+                cv.put(DatabaseHelper.WORKS_COLUMN_REPAIRSID, ((Repair) spinner.getSelectedItem()).getId());
+
+
+              long addedWorkId= DatabaseHelper.addWork(null,cv);
+                Work work = new Work((int)addedWorkId,name.getText().toString(),Float.parseFloat(price.getText().toString()),((Repair) spinner.getSelectedItem()).getId());
+
+
+                for (Spare spare : tmpList1) {
+                    if (spare.isSelected()) {
+                        cv.clear();
+                        cv.put(DatabaseHelper.WORKS_SPARES_WORK_ID, addedWorkId);
+                        cv.put(DatabaseHelper.WORKS_SPARES_SPARE_ID, spare.getId());
+                        DatabaseHelper.addWorksSpares(null, cv);
+                    }
+                }
+
+              Repair selectedRepair=  (Repair)spinner.getSelectedItem();
+                for (Repair rep : repairCollection.keySet()) {
+                    if (rep.getId() == selectedRepair.getId()) {
+                        repairCollection.get(rep).add(work);
+                        work.setRepairsId(rep.getId());
+                        break;
+                    }
+                }
+
+
+                wrkAdapter.notifyDataSetChanged();
+
+            }
+        });
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+     return builder;
+
+
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+
+            inflater.inflate(R.menu.works, menu);
+            super.onCreateOptionsMenu(menu, inflater);
+
+
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.works_add) {
+           setAddWork(getActivity()).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

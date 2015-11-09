@@ -44,6 +44,7 @@ public class SparesFragment extends Fragment {
     View rootView;
     private boolean notShowMenu = false;
     private int workId = 0;
+    private float workPrice=0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +55,7 @@ public class SparesFragment extends Fragment {
 
         notShowMenu = getArguments().getBoolean("nomenu");
         workId = getArguments().getInt("workId");
+        workPrice=getArguments().getFloat("workPrice");
         Log.e("in notshowmenu ", notShowMenu + " size " + getArguments().size() + " workid " + workId);
 
         showSpares(getActivity());
@@ -68,6 +70,12 @@ public class SparesFragment extends Fragment {
 
         if (!notShowMenu) {
             inflater.inflate(R.menu.spares, menu);
+            super.onCreateOptionsMenu(menu, inflater);
+        }else
+        {
+            MenuItem mi = menu.add("Цена работы без деталей: "+workPrice);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            mi.setEnabled(false);
             super.onCreateOptionsMenu(menu, inflater);
         }
 

@@ -72,6 +72,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String ORGANIZATIONS_COLUMN_ACCOUNT = "account";
     public static final String ORGANIZATIONS_COLUMN_PHONE = "phone";
 
+    public static final String CONTRACTS_TABLE_NAME = "contracts";
+    public static final String CONTRACTS_COLUMN_ID = "_id";
+    public static final String CONTRACTS_COLUMN_RESPONSEID = "responseid";
+    public static final String CONTRACTS_COLUMN_ORGANIZATIONID = "organizationid";
+    public static final String CONTRACTS_COLUMN_INITIAL_DATE = "initial_date";
+    public static final String CONTRACTS_COLUMN_FINAL_DATE = "final_date";
 
     public void initDB(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + "organizations");
@@ -96,13 +102,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ORGANIZATIONS_COLUMN_PHONE + " TEXT " +
                 ");";
 
-        String contracts = "CREATE TABLE contracts (" +
-                "_id integer primary key autoincrement," +
-                "organization integer," +
-                "repairshop_id integer," +
-                "initial_date DATE," +
-                "final_date integer," +
-                "price double" +
+
+        String contracts = "CREATE TABLE "+CONTRACTS_TABLE_NAME+" (" +
+                CONTRACTS_COLUMN_ID+" integer primary key autoincrement," +
+                CONTRACTS_COLUMN_ORGANIZATIONID+" integer," +
+                CONTRACTS_COLUMN_RESPONSEID+" integer,"+
+                CONTRACTS_COLUMN_INITIAL_DATE+" DATE," +
+                CONTRACTS_COLUMN_FINAL_DATE+" DATE" +
+
                 ");";
 
         String repair_shops = "CREATE TABLE repair_shops (" +
@@ -487,7 +494,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
 
 
-    public static void updateWork(ContentValues cv, String field, String[] bind) {
+    public static int updateWork(ContentValues cv, String field, String[] bind) {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
 
 
@@ -495,10 +502,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
       //  sdb.delete(WORKS_SPARES_TABLE_NAME,)
 
-        sdb.update(WORKS_TABLE_NAME, cv, field,
+       int result= sdb.update(WORKS_TABLE_NAME, cv, field,
                 bind);
 
         sdb.close();
+        return result;
     }
 
     public static long addWork(String columnHack, ContentValues cv) {
