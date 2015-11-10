@@ -48,4 +48,9 @@ public class Organization {
         this.phone = phone;
         this.account = account;
     }
+
+    @Override
+    public String toString(){
+        return this.getName();
+    }
 }

@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Work;
+import com.dekwin.autorep.fragments.ContractsFragment;
 import com.dekwin.autorep.fragments.OrganizationsFragment;
 import com.dekwin.autorep.fragments.ResponsibleFragment;
 import com.dekwin.autorep.fragments.SparesFragment;
@@ -112,9 +113,20 @@ public class MainActivity extends AppCompatActivity
     public void getWorksList(List<Work> works) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        SparesFragment sf = (SparesFragment) fragmentManager.findFragmentById(R.id.container);
 
-        sf.getWorksIdFromDialog(works);
+
+
+                if(fragmentManager.findFragmentById(R.id.container) instanceof SparesFragment){
+                    SparesFragment frag=(SparesFragment) fragmentManager.findFragmentById(R.id.container);
+                    frag.getWorksIdFromDialog(works);
+                }else{
+
+                    ContractsFragment frag = (ContractsFragment) fragmentManager.findFragmentById(R.id.container);
+                    frag.getWorksIdFromDialog(works);
+
+                }
+
+
     }
 
 
@@ -179,6 +191,9 @@ public class MainActivity extends AppCompatActivity
                     break;
                 case 4:
                     fragment = new WorksFragment();
+                    break;
+                case 5:
+                    fragment = new ContractsFragment();
                     break;
                 default:
                     fragment = new WorksFragment();

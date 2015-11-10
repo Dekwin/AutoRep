@@ -36,4 +36,10 @@ public class Responsible {
     public String getSurname() {
         return surname;
     }
+
+    @Override
+    public String toString(){
+        return this.getName();
+    }
+
 }

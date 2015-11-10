@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.dekwin.autorep.entities.Contract;
 import com.dekwin.autorep.entities.Organization;
 import com.dekwin.autorep.entities.Repair;
 import com.dekwin.autorep.entities.Responsible;
@@ -14,6 +15,7 @@ import com.dekwin.autorep.entities.Spare;
 import com.dekwin.autorep.entities.Work;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -79,6 +81,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CONTRACTS_COLUMN_INITIAL_DATE = "initial_date";
     public static final String CONTRACTS_COLUMN_FINAL_DATE = "final_date";
 
+
+    public static final String CONTRACTS_WORKS_TABLE_NAME = "contracts_works";
+    public static final String CONTRACTS_WORKS_COLUMN_CONTRACT_ID = "contract_id";
+    public static final String CONTRACTS_WORKS_COLUMN_WORK_ID = "work_id";
+
+
     public void initDB(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + "organizations");
         db.execSQL("DROP TABLE IF EXISTS " + "contracts");
@@ -123,9 +131,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 RESPONSIBLE_COLUMN_SURNAME + " varchar(255)" +
                 ")";
 
-        String contracts_works = "CREATE TABLE contracts_works (" +
-                "contract_id integer," +
-                "work_id integer" +
+        String contracts_works = "CREATE TABLE "+CONTRACTS_WORKS_TABLE_NAME+" (" +
+                CONTRACTS_WORKS_COLUMN_CONTRACT_ID+" integer," +
+                CONTRACTS_WORKS_COLUMN_WORK_ID+" integer" +
                 ");";
 
         String works = "CREATE TABLE " + WORKS_TABLE_NAME + " (" +
@@ -200,6 +208,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ") VALUES('Корпорация зла 2','киев борщаговская 334','+380953334598');");
 
 
+        /*
+        db.execSQL("INSERT INTO " + CONTRACTS_WORKS_TABLE_NAME + "(" + CONTRACTS_WORKS_COLUMN_CONTRACT_ID + ","
+                + CONTRACTS_WORKS_COLUMN_WORK_ID +") VALUES(1,1);");
+
+
+
+        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
+                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
+                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
+                ") VALUES(1,1,'2007-01-01','2017-02-01');");
+
+        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
+                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
+                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
+                ") VALUES(2,2,'2014-01-01','2015-09-01');");
+
+        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
+                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
+                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
+                ") VALUES(1,2,'2014-01-01','2015-09-01');");
+
+        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
+                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
+                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
+                ") VALUES(1,1,'2011-01-01','2014-09-01');");
+
+        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
+                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
+                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
+                ") VALUES(1,1,'2011-01-01','2014-09-01');");
+
+*/
     }
 
     @Override
@@ -218,6 +258,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c1 = sdb.query(WORKS_TABLE_NAME, new String[]{WORKS_COLUMN_ID, WORKS_COLUMN_NAME, WORKS_COLUMN_PRICE},
                 where, null,
                 null, null, sort);
+        ArrayList<Work> worksList = new ArrayList<>();
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                    Work work = new Work(Integer.parseInt(c1.getString(c1.getColumnIndex(WORKS_COLUMN_ID))),
+                            c1.getString(c1.getColumnIndex(WORKS_COLUMN_NAME)), Float.parseFloat(c1.getString(c1.getColumnIndex(WORKS_COLUMN_PRICE))));
+
+                    worksList.add(work);
+                } while (c1.moveToNext());
+            }
+            c1.close();
+        }
+
+        sdb.close();
+        return worksList;
+    }
+
+    public static ArrayList<Work> selectWorksByContractId(String sort, String contractId) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+
+        String query ="SELECT * FROM "+WORKS_TABLE_NAME + " WHERE "+WORKS_COLUMN_ID +" IN (SELECT "+
+                CONTRACTS_WORKS_COLUMN_WORK_ID+ " FROM "+CONTRACTS_WORKS_TABLE_NAME+" WHERE "+
+                CONTRACTS_WORKS_COLUMN_CONTRACT_ID+" = "+contractId+");";
+
+        Cursor c1 = sdb.rawQuery(query,null);
         ArrayList<Work> worksList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
@@ -384,6 +449,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return responsibleList;
     }
 
+
+    public static Responsible selectResponsibleById(String id) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        String query="SELECT * FROM "+RESPONSIBLE_TABLE_NAME+" WHERE "+RESPONSIBLE_COLUMN_ID+" = "+id;
+        Cursor c1 = sdb.rawQuery(query,null);
+        ArrayList<Responsible> responsibleList = new ArrayList<>();
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                    Responsible responsible = new Responsible(Integer.parseInt(c1.getString(c1.getColumnIndex(RESPONSIBLE_COLUMN_ID))),
+                            c1.getString(c1.getColumnIndex(RESPONSIBLE_COLUMN_NAME)), c1.getString(c1.getColumnIndex(RESPONSIBLE_COLUMN_SURNAME)));
+
+
+                    sdb.close();
+                  return responsible;
+
+                } while (c1.moveToNext());
+            }
+        }
+        c1.close();
+        sdb.close();
+        return null;
+    }
+
     public static long addResponsible(String columnHack, ContentValues cv) {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
         long lastId = sdb.insert(RESPONSIBLE_TABLE_NAME, columnHack, cv);
@@ -436,6 +525,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sdb.close();
         return organizationsList;
     }
+
+
+    public static Organization selectOrganizationById(String id) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+
+       String query="SELECT * FROM "+ORGANIZATIONS_TABLE_NAME+" WHERE "+ORGANIZATIONS_COLUMN_ID+" = "+id;
+        Cursor c1 = sdb.rawQuery(query,null);
+        ArrayList<Organization> organizationsList = new ArrayList<>();
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                    Organization organization = new Organization(Integer.parseInt(c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_ID))),
+                            c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_NAME)), c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_ACCOUNT)), c1.getString(c1.getColumnIndex(ORGANIZATIONS_COLUMN_PHONE)));
+
+                    sdb.close();
+                    return organization;
+                 //   organizationsList.add(organization);
+
+                } while (c1.moveToNext());
+            }
+        }
+        c1.close();
+        sdb.close();
+        return null;
+    }
+
 
     public static long addOrganization(String columnHack, ContentValues cv) {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
@@ -503,7 +618,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
       //  sdb.delete(WORKS_SPARES_TABLE_NAME,)
 
        int result= sdb.update(WORKS_TABLE_NAME, cv, field,
-                bind);
+               bind);
 
         sdb.close();
         return result;
@@ -532,5 +647,76 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sdb.close();
     }
 
+
+    /**
+     * contracts part
+     */
+
+    public static ArrayList<Contract> selectContracts(String sort) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        Cursor c1 = sdb.query(CONTRACTS_TABLE_NAME, new String[]{CONTRACTS_COLUMN_ID, CONTRACTS_COLUMN_RESPONSEID,
+                        CONTRACTS_COLUMN_ORGANIZATIONID,CONTRACTS_COLUMN_INITIAL_DATE,CONTRACTS_COLUMN_FINAL_DATE},
+                null, null,
+                null, null, sort);
+        ArrayList<Contract> contractsList = new ArrayList<>();
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                    String  contractOrganizationId=c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_ORGANIZATIONID));
+                    String  contractResponsibleId=c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_RESPONSEID));
+                    Organization org= selectOrganizationById(contractOrganizationId);
+                    Responsible resp = selectResponsibleById(contractResponsibleId);
+                    GregorianCalendar initialDate = new GregorianCalendar(); //!!!!
+                    GregorianCalendar finalDate = new GregorianCalendar(); //!!!!
+
+                    Contract contract = new Contract(Integer.parseInt(c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_ID))),
+                            resp,org,initialDate,finalDate);
+
+                    contractsList.add(contract);
+
+                } while (c1.moveToNext());
+            }
+        }
+        c1.close();
+        sdb.close();
+        return contractsList;
+    }
+
+    public static long addContract(String columnHack, ContentValues cv) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        long lastId = sdb.insert(CONTRACTS_TABLE_NAME, columnHack, cv);
+        sdb.close();
+
+        return lastId;
+    }
+
+
+
+    public static void deleteContract(String whereClause, String whereArgs[]) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        sdb.delete(CONTRACTS_TABLE_NAME, whereClause, whereArgs);
+        sdb.close();
+    }
+
+    /**
+     * contracts_works
+     */
+
+
+    public static long addContractsWorks(String columnHack, ContentValues cv) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        long lastId = sdb.insert(CONTRACTS_WORKS_TABLE_NAME, columnHack, cv);
+        sdb.close();
+
+        return lastId;
+    }
+
+
+
+    public static void deleteContractsWorks(String whereClause, String whereArgs[]) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        sdb.delete(CONTRACTS_WORKS_TABLE_NAME, whereClause, whereArgs);
+        sdb.close();
+    }
 
 }

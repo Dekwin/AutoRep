@@ -5,6 +5,7 @@
     <string name="title_section2">Ответственные</string>
     <string name="title_section3">Заказчики</string>
     <string name="title_section4">Работы</string>
+    <string name="title_section5">Контракты</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
