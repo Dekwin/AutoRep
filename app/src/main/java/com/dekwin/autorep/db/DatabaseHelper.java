@@ -14,6 +14,9 @@ import com.dekwin.autorep.entities.Responsible;
 import com.dekwin.autorep.entities.Spare;
 import com.dekwin.autorep.entities.Work;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -116,7 +119,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CONTRACTS_COLUMN_ORGANIZATIONID+" integer," +
                 CONTRACTS_COLUMN_RESPONSEID+" integer,"+
                 CONTRACTS_COLUMN_INITIAL_DATE+" DATE," +
-                CONTRACTS_COLUMN_FINAL_DATE+" DATE" +
+                CONTRACTS_COLUMN_FINAL_DATE + " DATE," +
+                "FOREIGN KEY(" + CONTRACTS_COLUMN_ORGANIZATIONID + ") REFERENCES " + ORGANIZATIONS_TABLE_NAME + "(" + ORGANIZATIONS_COLUMN_ID + ")," +
+                "FOREIGN KEY(" + CONTRACTS_COLUMN_RESPONSEID + ") REFERENCES " + ORGANIZATIONS_TABLE_NAME + "(" + ORGANIZATIONS_COLUMN_ID + ")" +
 
                 ");";
 
@@ -133,7 +138,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String contracts_works = "CREATE TABLE "+CONTRACTS_WORKS_TABLE_NAME+" (" +
                 CONTRACTS_WORKS_COLUMN_CONTRACT_ID+" integer," +
-                CONTRACTS_WORKS_COLUMN_WORK_ID+" integer" +
+                CONTRACTS_WORKS_COLUMN_WORK_ID + " integer," +
+                "FOREIGN KEY(" + CONTRACTS_WORKS_COLUMN_CONTRACT_ID + ") REFERENCES " + CONTRACTS_TABLE_NAME + "(" + CONTRACTS_COLUMN_ID + ")," +
+                "FOREIGN KEY(" + CONTRACTS_WORKS_COLUMN_WORK_ID + ") REFERENCES " + WORKS_TABLE_NAME + "(" + WORKS_COLUMN_ID + ")" +
                 ");";
 
         String works = "CREATE TABLE " + WORKS_TABLE_NAME + " (" +
@@ -208,7 +215,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ") VALUES('Корпорация зла 2','киев борщаговская 334','+380953334598');");
 
 
-        /*
+
         db.execSQL("INSERT INTO " + CONTRACTS_WORKS_TABLE_NAME + "(" + CONTRACTS_WORKS_COLUMN_CONTRACT_ID + ","
                 + CONTRACTS_WORKS_COLUMN_WORK_ID +") VALUES(1,1);");
 
@@ -232,14 +239,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
                 + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
                 + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
-                ") VALUES(1,1,'2011-01-01','2014-09-01');");
+                ") VALUES(1,1,'2011-01-01','2014-09-05');");
 
         db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
                 + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
                 + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
-                ") VALUES(1,1,'2011-01-01','2014-09-01');");
+                ") VALUES(1,1,'2011-01-07','2014-09-01');");
 
-*/
+
     }
 
     @Override
@@ -423,8 +430,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * responsible part
      *
-     * @param sort
-     * @return
+     *
      */
     public static ArrayList<Responsible> selectResponsible(String sort) {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
@@ -443,8 +449,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 } while (c1.moveToNext());
             }
+            c1.close();
         }
-        c1.close();
+
         sdb.close();
         return responsibleList;
     }
@@ -467,8 +474,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 } while (c1.moveToNext());
             }
+            c1.close();
         }
-        c1.close();
+
         sdb.close();
         return null;
     }
@@ -520,8 +528,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 } while (c1.moveToNext());
             }
+            c1.close();
         }
-        c1.close();
+
         sdb.close();
         return organizationsList;
     }
@@ -545,8 +554,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 } while (c1.moveToNext());
             }
+            c1.close();
         }
-        c1.close();
+
         sdb.close();
         return null;
     }
@@ -579,8 +589,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * repairs part
-     * @param sort
-     * @return
+     *
      */
     public static ArrayList<Repair> selectRepairs(String sort) {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
@@ -598,8 +607,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 } while (c1.moveToNext());
             }
+            c1.close();
         }
-        c1.close();
+
         sdb.close();
         return repairsList;
     }
@@ -664,10 +674,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 do {
                     String  contractOrganizationId=c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_ORGANIZATIONID));
                     String  contractResponsibleId=c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_RESPONSEID));
-                    Organization org= selectOrganizationById(contractOrganizationId);
+                    Organization org = selectOrganizationById(contractOrganizationId);
                     Responsible resp = selectResponsibleById(contractResponsibleId);
+                    String contractInitialDate = c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_INITIAL_DATE));
+                    String contractFinalDate = c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_FINAL_DATE));
+
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    java.util.Date date = new java.util.Date();
                     GregorianCalendar initialDate = new GregorianCalendar(); //!!!!
+                    try {
+                        date = format.parse(contractInitialDate);
+                        date.setMonth(date.getMonth() + 1);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    initialDate.setTime(date);
+
                     GregorianCalendar finalDate = new GregorianCalendar(); //!!!!
+                    try {
+                        date = format.parse(contractFinalDate);
+                        date.setMonth(date.getMonth() + 1);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    finalDate.setTime(date);
+
 
                     Contract contract = new Contract(Integer.parseInt(c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_ID))),
                             resp,org,initialDate,finalDate);
@@ -676,8 +710,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 } while (c1.moveToNext());
             }
+            c1.close();
         }
-        c1.close();
+
         sdb.close();
         return contractsList;
     }

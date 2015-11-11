@@ -1,44 +1,44 @@
 package com.dekwin.autorep.fragments;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dekwin.autorep.R;
 import com.dekwin.autorep.adapters.ContractsAdapter;
-import com.dekwin.autorep.adapters.SparesAdapter;
 import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Contract;
 import com.dekwin.autorep.entities.Organization;
-import com.dekwin.autorep.entities.Repair;
 import com.dekwin.autorep.entities.Responsible;
-import com.dekwin.autorep.entities.Spare;
 import com.dekwin.autorep.entities.Work;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by dekst on 09.11.2015.
@@ -110,6 +110,7 @@ public class ContractsFragment extends Fragment {
     public void showContracts(final Context ctx) {
         contractsList = DatabaseHelper.selectContracts(null);
         contractsListAdapter = new ContractsAdapter(ctx, contractsList);
+
         tbl.setLongClickable(true);
         tbl.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> listView, View v, int position, long id) {
@@ -163,7 +164,7 @@ public class ContractsFragment extends Fragment {
 
     public static DialogFragment newInstance(int sectionNumber) {
 
-        DialogFragment fragment = null;
+        DialogFragment fragment;
         switch (sectionNumber) {
             case 1:
                 fragment = new AddWorksFragment();
@@ -182,6 +183,13 @@ public class ContractsFragment extends Fragment {
     }
 
 
+    private EditText fromDateEtxt;
+    private EditText toDateEtxt;
+
+    private DatePickerDialog fromDatePickerDialog;
+    private DatePickerDialog toDatePickerDialog;
+    private SimpleDateFormat dateFormatter;
+
 
     public AlertDialog.Builder setAddContract(final Context ctx) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -189,17 +197,29 @@ public class ContractsFragment extends Fragment {
         final View dialogView = inflater.inflate(R.layout.contracts_add, null);
         builder.setView(dialogView);
 
+
         final Spinner responsibleSpinner = (Spinner) dialogView.findViewById(R.id.contracts_add_responsible);
         ArrayList<Responsible> responsibleList=DatabaseHelper.selectResponsible(null);
-        final ArrayAdapter<Responsible> responsibleAdapter = new ArrayAdapter<Responsible>(getActivity(), android.R.layout.simple_spinner_item, responsibleList);
+        final ArrayAdapter<Responsible> responsibleAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, responsibleList);
         responsibleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         responsibleSpinner.setAdapter(responsibleAdapter);
 
         final Spinner organizationsSpinner = (Spinner) dialogView.findViewById(R.id.contracts_add_organization);
         ArrayList<Organization> organizationsList=DatabaseHelper.selectOrganizations(null);
-        final ArrayAdapter<Organization> organizationsAdapter = new ArrayAdapter<Organization>(getActivity(), android.R.layout.simple_spinner_item, organizationsList);
+        final ArrayAdapter<Organization> organizationsAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, organizationsList);
         responsibleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         organizationsSpinner.setAdapter(organizationsAdapter);
+
+
+        fromDateEtxt = (EditText) dialogView.findViewById(R.id.contract_info_element_initial_date);
+        toDateEtxt = (EditText) dialogView.findViewById(R.id.contract_info_element_final_date);
+        fromDateEtxt.setInputType(InputType.TYPE_NULL);
+        toDateEtxt.setInputType(InputType.TYPE_NULL);
+
+        setDateTimeField();
+
+
+
 
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -216,11 +236,24 @@ public class ContractsFragment extends Fragment {
                 ContentValues cvcontract = new ContentValues();
                 cvcontract.put(DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID, ((Responsible) responsibleSpinner.getSelectedItem()).getId());
                 cvcontract.put(DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID, ((Organization) organizationsSpinner.getSelectedItem()).getId());
-
+                cvcontract.put(DatabaseHelper.CONTRACTS_COLUMN_INITIAL_DATE, fromDateEtxt.getText().toString());
+                cvcontract.put(DatabaseHelper.CONTRACTS_COLUMN_FINAL_DATE, toDateEtxt.getText().toString());
 
                 long lastContractId = DatabaseHelper.addContract(null, cvcontract);
+
+                Log.e("calendar", "day " + toDatePickerDialog.getDatePicker().getDayOfMonth());
+
                 GregorianCalendar initialDate= new GregorianCalendar();
+                initialDate.set(fromDatePickerDialog.getDatePicker().getYear(),
+                        fromDatePickerDialog.getDatePicker().getMonth(),
+                        fromDatePickerDialog.getDatePicker().getDayOfMonth());
+
                 GregorianCalendar finalDate = new GregorianCalendar();
+                finalDate.set(toDatePickerDialog.getDatePicker().getYear(),
+                        toDatePickerDialog.getDatePicker().getMonth(),
+                        toDatePickerDialog.getDatePicker().getDayOfMonth());
+
+
                 Contract contract = new Contract((int) lastContractId,(Responsible) responsibleSpinner.getSelectedItem(),
                         (Organization) organizationsSpinner.getSelectedItem(),initialDate,finalDate);
 
@@ -301,56 +334,7 @@ public class ContractsFragment extends Fragment {
     private DialogFragment fr = null;
 
 
-    /*
-    public void setSortHeader(final Context ctx) {
-        TextView headerId = (TextView) rootView.findViewById(R.id.spares_list_header_name);
-        headerId.setOnTouchListener(new View.OnTouchListener() {
-            private boolean asc = true;
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                String sortType;
-                if (!asc) {
-                    sortType = DatabaseHelper.SPARES_COLUMN_NAME + " ASC";
-                    asc = true;
-                } else {
-                    sortType = DatabaseHelper.SPARES_COLUMN_NAME + " DESC";
-                    asc = false;
-                }
-                //final SparesAdapter contactListAdapter = new SparesAdapter(  ctx, DatabaseHelper.selectSpares(sortType));
-                contractsList = DatabaseHelper.selectSpares(sortType, workId);
-                contractsListAdapter = new SparesAdapter(ctx, contractsList);
-                tbl.setAdapter(contractsListAdapter);
-                return false;
-            }
-        });
-
-        TextView headerName = (TextView) rootView.findViewById(R.id.spares_list_header_price);
-        headerName.setOnTouchListener(new View.OnTouchListener() {
-
-            private boolean asc = true;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                String sortType;
-                if (!asc) {
-                    sortType = DatabaseHelper.SPARES_COLUMN_PRICE + " ASC";
-                    asc = true;
-                } else {
-                    sortType = DatabaseHelper.SPARES_COLUMN_PRICE + " DESC";
-                    asc = false;
-                }
-
-
-                //final SparesAdapter contactListAdapter = new SparesAdapter(  ctx, DatabaseHelper.selectSpares(sortType));
-                contractsList = DatabaseHelper.selectSpares(sortType, workId);
-                contractsListAdapter = new SparesAdapter(ctx, contractsList);
-                tbl.setAdapter(contractsListAdapter);
-                return false;
-            }
-        });
-    }
-*/
 
     List<Work> worksFromFragment = null;
 
@@ -358,5 +342,59 @@ public class ContractsFragment extends Fragment {
         worksFromFragment = works;
 
     }
+
+
+    private void setDateTimeField() {
+
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+
+        fromDateEtxt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                fromDatePickerDialog.show();
+            }
+        });
+        toDateEtxt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                toDatePickerDialog.show();
+            }
+        });
+
+        Calendar newCalendar = Calendar.getInstance();
+
+        fromDateEtxt.setText(dateFormatter.format(newCalendar.getTime()));
+        toDateEtxt.setText(dateFormatter.format(newCalendar.getTime()));
+
+        fromDatePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                fromDateEtxt.setText(dateFormatter.format(newDate.getTime()));
+                toDatePickerDialog.getDatePicker().setMinDate(newDate.getTime().getTime() - 86400000);
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+
+        fromDatePickerDialog.getDatePicker().setMinDate(newCalendar.getTime().getTime());
+
+        toDatePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                toDateEtxt.setText(dateFormatter.format(newDate.getTime()));
+                fromDatePickerDialog.getDatePicker().setMaxDate(newDate.getTime().getTime());
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+        toDatePickerDialog.getDatePicker().setMinDate(newCalendar.getTime().getTime());
+
+    }
+
+
+
 
 }

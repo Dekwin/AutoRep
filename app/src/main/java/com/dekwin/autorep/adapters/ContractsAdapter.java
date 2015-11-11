@@ -1,23 +1,23 @@
 package com.dekwin.autorep.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dekwin.autorep.R;
 import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Contract;
-import com.dekwin.autorep.entities.Spare;
 import com.dekwin.autorep.entities.Work;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created by dekst on 10.11.2015.
@@ -53,7 +53,7 @@ public class ContractsAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup arg2) {
-        Contract contract = list.get(position);
+        final Contract contract = list.get(position);
 
 
         if (convertView == null) {
@@ -83,15 +83,33 @@ public class ContractsAdapter extends BaseAdapter{
         TextView initialDate = (TextView) convertView.findViewById(R.id.contract_info_element_initial_date);
         TextView finalDate = (TextView) convertView.findViewById(R.id.contract_info_element_final_date);
 
-        initialDate.setText(contract.getInitialDate().get(Calendar.DAY_OF_MONTH)+"."
-                +contract.getInitialDate().get(Calendar.MONTH)+"."+contract.getInitialDate().get(Calendar.YEAR));
+        initialDate.setText(contract.getInitialDate().get(Calendar.DAY_OF_MONTH) + "."
+                + contract.getInitialDate().get(Calendar.MONTH) + "." + contract.getInitialDate().get(Calendar.YEAR));
 
 
         finalDate.setText(contract.getFinalDate().get(Calendar.DAY_OF_MONTH) + "."
                 + contract.getFinalDate().get(Calendar.MONTH) + "." + contract.getFinalDate().get(Calendar.YEAR));
 
 
-        ListView workList = (ListView) convertView.findViewById(R.id.contract_info_element_worklist);
+        Button workList = (Button) convertView.findViewById(R.id.contract_info_element_worklist);
+
+        workList.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+
+                ArrayList<Work> works = DatabaseHelper.selectWorksByContractId(null, Integer.toString(contract.getId()));
+                worksListDialog(works).show();
+
+
+            }
+
+        });
+
+
+
+
+
+      /*
 
         ArrayList<Work> works=DatabaseHelper.selectWorksByContractId(null, Integer.toString(contract.getId()));
 
@@ -99,12 +117,36 @@ public class ContractsAdapter extends BaseAdapter{
         Log.e("works","contract "+contract.getId()+" workname "+w.getName());
 
         WorkListAdapter workListAdapter=new WorkListAdapter(context, works);
-        workList.setAdapter(workListAdapter);
+       workList.setAdapter(workListAdapter);
+*/
 
 
 
 
         return convertView;
+    }
+
+    private AlertDialog.Builder worksListDialog(ArrayList<Work> works) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        final View dialogView = inflater.inflate(R.layout.contract_info, null);
+        builder.setView(dialogView);
+        ListView listView = (ListView) dialogView.findViewById(R.id.contract_info_list);
+
+        WorkListAdapter workListAdapter = new WorkListAdapter(context, works);
+        listView.setAdapter(workListAdapter);
+        if (works.size() == 0)
+            builder.setTitle("Нет работ по договору");
+
+        builder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        return builder;
     }
 
 }

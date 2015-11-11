@@ -39,7 +39,7 @@ public class Responsible {
 
     @Override
     public String toString(){
-        return this.getName();
+        return this.getSurname() + " " + this.getName();
     }
 
 }
