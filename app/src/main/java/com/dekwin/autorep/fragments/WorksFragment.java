@@ -1,6 +1,5 @@
 package com.dekwin.autorep.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -18,22 +17,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.dekwin.autorep.R;
-import com.dekwin.autorep.adapters.ExpandableListAdapter;
-import com.dekwin.autorep.adapters.ResponsibleAdapter;
 import com.dekwin.autorep.adapters.SparesCheckBoxAdapter;
 import com.dekwin.autorep.adapters.WorksAdapter;
 import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Repair;
-import com.dekwin.autorep.entities.Responsible;
 import com.dekwin.autorep.entities.Spare;
 import com.dekwin.autorep.entities.Work;
 
@@ -142,8 +136,6 @@ public class WorksFragment extends Fragment {
 
 
     }
-
-
 
     private void editWorks(final Context ctx){
         expListView.setLongClickable(true);
@@ -335,79 +327,6 @@ public class WorksFragment extends Fragment {
         });
 
 
-        /*
-        expListView.setLongClickable(true);
-        expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            public boolean onItemLongClick(AdapterView<?> listView, View v, int position, long id) {
-                // Get the cursor, positioned to the corresponding row in the result set
-                final Work cursor = (Work) listView.getItemAtPosition(position);
-
-                // Get the state's capital from this row in the database.
-                final int currentId =
-                        cursor.getId();
-
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                final LayoutInflater inflater = getActivity().getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.works_add, null);
-                builder.setView(dialogView);
-                list = DatabaseHelper.selectSpares(null);
-                ListView spares = (ListView) dialogView.findViewById(R.id.works_add_spares);
-                SparesCheckBoxAdapter sparesCheckBoxAdapter = new SparesCheckBoxAdapter(ctx, list);
-                spares.setAdapter(sparesCheckBoxAdapter);
-
-                builder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        EditText name = (EditText) ((Dialog) dialog).findViewById(R.id.works_add_name);
-
-                        //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
-                        ContentValues cv = new ContentValues();
-                        cv.put(DatabaseHelper.WORKS_COLUMN_NAME, name.getText().toString());
-
-                        cursor.setName(name.getText().toString());
-
-                        listAdapter.notifyDataSetChanged();
-                        DatabaseHelper.updateResponsible(cv, DatabaseHelper.WORKS_COLUMN_ID + " = ?",
-                                new String[]{currentId + ""});
-
-                        Toast.makeText(ctx,
-                                "Updated. id: " + currentId + ", name: " + cursor.getName(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-
-                    }
-                });
-
-                builder.setNeutralButton("Удалить", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        //retval = 0;
-                        Toast.makeText(ctx,
-                                "Deleted. id: " + currentId + ", name: " + cursor.getName(), Toast.LENGTH_SHORT).show();
-                        list.remove(cursor);
-                        listAdapter.notifyDataSetChanged();
-                        DatabaseHelper.deleteResponsible(DatabaseHelper.RESPONSIBLE_COLUMN_ID + "=" + currentId, null);
-                    }
-                });
-
-                ((EditText) dialogView.findViewById(R.id.responsible_add_name)).setText(cursor.getName());
-            //    ((EditText) dialogView.findViewById(R.id.responsible_add_surname)).setText(cursor.getSurname());
-                builder.show();
-                return true;
-            }
-        });
-
-        */
     }
 
     private AlertDialog.Builder setAddWork(final Context ctx) {

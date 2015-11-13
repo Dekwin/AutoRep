@@ -3,6 +3,7 @@ package com.dekwin.autorep.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,14 @@ public class ContractsAdapter extends BaseAdapter{
 
         Button workList = (Button) convertView.findViewById(R.id.contract_info_element_worklist);
 
+        float fullPrice = DatabaseHelper.getFullPriceOfContract(contract.getId() + "");
+
+        TextView price = (TextView) convertView.findViewById(R.id.contract_info_element_price);
+        Log.e("Full price", " contract id: " + contract.getId() + " fullPrice: " + fullPrice + " fullOriginalPrice: " + contract.getOriginalPrice());
+
+
+        price.setText(contract.getOriginalPrice() + "/" + fullPrice);
+
         workList.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -137,6 +146,7 @@ public class ContractsAdapter extends BaseAdapter{
         listView.setAdapter(workListAdapter);
         if (works.size() == 0)
             builder.setTitle("Нет работ по договору");
+        else builder.setTitle("Названия и цены работ");
 
         builder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
 

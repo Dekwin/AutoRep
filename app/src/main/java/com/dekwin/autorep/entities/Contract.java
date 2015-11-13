@@ -1,6 +1,5 @@
 package com.dekwin.autorep.entities;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
@@ -10,6 +9,8 @@ public class Contract {
     private int id;
     private Responsible responsible;
     private Organization organization;
+
+    private float originalPrice = 0;
     private GregorianCalendar initialDate;
     private GregorianCalendar finalDate;
 
@@ -23,6 +24,14 @@ public class Contract {
 
     public Organization getOrganization() {
         return organization;
+    }
+
+    public void setOriginalPrice(float price) {
+        this.originalPrice = price;
+    }
+
+    public float getOriginalPrice() {
+        return originalPrice;
     }
 
     public void setOrganization(Organization org) {

@@ -23,7 +23,6 @@ public class Spare {
         this.price = price;
     }
 
-
     public void setName(String name) {
         this.name = name;
     }
@@ -58,7 +57,4 @@ public class Spare {
 
 
     }
-
-
-
 }

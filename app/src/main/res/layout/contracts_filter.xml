@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
-    android:clickable="false"
-    android:descendantFocusability="blocksDescendants"
-    android:focusable="false"
-    android:focusableInTouchMode="false">
+    android:padding="10dp">
 
     <GridLayout
         android:layout_width="match_parent"
@@ -26,16 +23,16 @@
             android:layout_row="0"
             android:layout_column="0" />
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
 
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_row="0"
             android:layout_column="1"
-            android:id="@+id/contract_info_element_contract_number"
-            android:hint="666" />
-
+            android:id="@+id/contract_filter_contract_number"
+            android:text=""
+            android:inputType="number" />
 
 
     </GridLayout>
@@ -65,17 +62,17 @@
             android:text="Фамилия: "
 
             android:layout_row="0"
-            android:layout_column="0"
-            />
+            android:layout_column="0" />
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/contract_info_element_surname"
+            android:id="@+id/contract_filter_surname"
             android:layout_row="0"
             android:layout_column="1"
-            android:hint="Ф ответственного" />
+            android:text="" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,17 +80,16 @@
             android:text="Имя: "
 
             android:layout_row="1"
-            android:layout_column="0"
-            />
+            android:layout_column="0" />
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/contract_info_element_name"
+            android:id="@+id/contract_filter_name"
             android:layout_row="1"
             android:layout_column="1"
-            android:hint="И ответственного" />
+            android:text="" />
 
 
     </GridLayout>
@@ -124,17 +120,17 @@
             android:text="Название: "
 
             android:layout_row="0"
-            android:layout_column="0"
-            />
+            android:layout_column="0" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/contract_info_element_organization_name"
+            android:id="@+id/contract_filter_organization_name"
             android:layout_row="0"
             android:layout_column="1"
-            android:hint="Название" />
+            android:text="" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -142,17 +138,16 @@
             android:text="Р. счет: "
 
             android:layout_row="1"
-            android:layout_column="0"
-            />
+            android:layout_column="0" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/contract_info_element_organization_account"
+            android:id="@+id/contract_filter_organization_account"
             android:layout_row="1"
             android:layout_column="1"
-            android:hint="Р счет" />
+            android:text="" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -161,17 +156,16 @@
             android:text="Телефон: "
 
             android:layout_row="2"
-            android:layout_column="0"
-            />
+            android:layout_column="0" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/contract_info_element_organization_phone"
+            android:id="@+id/contract_filter_organization_phone"
             android:layout_row="2"
             android:layout_column="1"
-            android:hint="Телефон" />
+            android:text="" />
 
 
     </GridLayout>
@@ -180,7 +174,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Сроки работ"
+        android:text="Стоимость"
 
         android:layout_gravity="center_horizontal" />
 
@@ -188,86 +182,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:rowCount="2"
+        android:rowCount="1"
         android:useDefaultMargins="false"
         android:transitionGroup="false"
-        android:touchscreenBlocksFocus="false">
+        android:touchscreenBlocksFocus="false"
 
-        <TextView
+        >
+
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Дата начала: "
-
+            android:hint="минимальная"
+            android:text=""
+            android:inputType="number"
             android:layout_row="0"
             android:layout_column="0"
-            />
+            android:id="@+id/contract_filter_minprice"
+            android:layout_columnWeight="0.5"
+            android:layout_gravity="center_horizontal" />
 
-        <TextView
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/contract_info_element_initial_date"
+            android:hint="максимальная"
+            android:text=""
+            android:inputType="number"
             android:layout_row="0"
             android:layout_column="1"
-            android:hint="дата1" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Дата завершения: "
-
-            android:layout_row="1"
-            android:layout_column="0"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/contract_info_element_final_date"
-            android:layout_row="1"
-            android:layout_column="1"
-            android:hint="дата2" />
-
-
+            android:id="@+id/contract_filter_maxprice"
+            android:layout_columnWeight="0.5"
+            android:layout_gravity="center_horizontal" />
     </GridLayout>
 
-    <TextView
+    <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Стоимость услуг (к оплате/новая)"
-
+        android:text="только целые совпадения"
+        android:id="@+id/contract_filter_match_checkbox"
         android:layout_gravity="center_horizontal" />
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="начальная/новая"
-
-        android:layout_row="0"
-        android:layout_column="0"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/contract_info_element_price" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Список работ"
-        android:layout_gravity="center_horizontal"
-
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Список работ"
-        android:id="@+id/contract_info_element_worklist"
-        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

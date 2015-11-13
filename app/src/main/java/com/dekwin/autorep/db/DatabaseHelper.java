@@ -81,6 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CONTRACTS_COLUMN_ID = "_id";
     public static final String CONTRACTS_COLUMN_RESPONSEID = "responseid";
     public static final String CONTRACTS_COLUMN_ORGANIZATIONID = "organizationid";
+    public static final String CONTRACTS_COLUMN_PRICE = "originalPrice";
     public static final String CONTRACTS_COLUMN_INITIAL_DATE = "initial_date";
     public static final String CONTRACTS_COLUMN_FINAL_DATE = "final_date";
 
@@ -118,6 +119,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CONTRACTS_COLUMN_ID+" integer primary key autoincrement," +
                 CONTRACTS_COLUMN_ORGANIZATIONID+" integer," +
                 CONTRACTS_COLUMN_RESPONSEID+" integer,"+
+                CONTRACTS_COLUMN_PRICE + " REAL," +
                 CONTRACTS_COLUMN_INITIAL_DATE+" DATE," +
                 CONTRACTS_COLUMN_FINAL_DATE + " DATE," +
                 "FOREIGN KEY(" + CONTRACTS_COLUMN_ORGANIZATIONID + ") REFERENCES " + ORGANIZATIONS_TABLE_NAME + "(" + ORGANIZATIONS_COLUMN_ID + ")," +
@@ -190,35 +192,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(repair);
         db.execSQL(works_repairs);
 
-        for (int i = 0; i < 10; i++) {
-            db.execSQL("INSERT INTO spares(name,price) VALUES('Dviglo',200);");
-            db.execSQL("INSERT INTO spares(name,price) VALUES('Korobka',100);");
-            db.execSQL("INSERT INTO spares(name,price) VALUES('Rama',800);");
-        }
+        //for (int i = 0; i < 10; i++) {
+        //       db.execSQL("INSERT INTO spares(name,price) VALUES('Dviglo',200);");
+        //      db.execSQL("INSERT INTO spares(name,price) VALUES('Korobka',100);");
+        //     db.execSQL("INSERT INTO spares(name,price) VALUES('Rama',800);");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Коленвал',1010)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Маховик',900)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Картер',2000)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Передача',4000)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Рычаг',1300)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Карданый вал',2300)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Кожух КПП',1900)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Синхронизатор КПП',12900)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Торцевая кулачковая муфта',140)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Мастика 1л',240)");
+        db.execSQL("INSERT INTO " + SPARES_TABLE_NAME + "(" + SPARES_COLUMN_NAME + "," + SPARES_COLUMN_PRICE + ") VALUES ('Краска фиол.',840)");
 
-        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Ремонт двигателя - картер',2000,1);");
-        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Ремонт коробки - передача',4000,2);");
-        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Ремонт коробки - рычаг',1300,2);");
+        //}
+
+
+
 
         db.execSQL("INSERT INTO repairs(name) VALUES('Ремонт двигателя');");
         db.execSQL("INSERT INTO repairs(name) VALUES('Ремонт коробки');");
+        db.execSQL("INSERT INTO repairs(name) VALUES('Восстановление салона');");
+        db.execSQL("INSERT INTO repairs(name) VALUES('Ремонт дисков');");
+
+
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Сваривание дисков',6000,4);");
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Покраска диска',500,4);");
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Замена картера',2000,1);");
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Настройка передач',4000,2);");
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Замена рычагов',1300,2);");
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Карданый вал',2300,2);");
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Смена кожуха',1900,2);");
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Установка синхронизатора',12900,2);");
+        db.execSQL("INSERT INTO works(name,price,repairsid) VALUES('Торцевая кулачковая муфта, замена',140,2);");
+
 
         db.execSQL("INSERT INTO " + RESPONSIBLE_TABLE_NAME + "(" + RESPONSIBLE_COLUMN_NAME + "," + RESPONSIBLE_COLUMN_SURNAME + ") VALUES('Вася','Петров');");
         db.execSQL("INSERT INTO " + RESPONSIBLE_TABLE_NAME + "(" + RESPONSIBLE_COLUMN_NAME + "," + RESPONSIBLE_COLUMN_SURNAME + ") VALUES('Иван','Иванов');");
 
         db.execSQL("INSERT INTO " + ORGANIZATIONS_TABLE_NAME + "(" + ORGANIZATIONS_COLUMN_NAME + ","
                 + ORGANIZATIONS_COLUMN_ACCOUNT + "," + ORGANIZATIONS_COLUMN_PHONE
-                + ") VALUES('Корпорация юмора','Петровская25','88005553535');");
+                + ") VALUES('Корпорация юмора','Киев Петровская 25. Приват 457','88005553535');");
 
         db.execSQL("INSERT INTO " + ORGANIZATIONS_TABLE_NAME + "(" + ORGANIZATIONS_COLUMN_NAME + ","
                 + ORGANIZATIONS_COLUMN_ACCOUNT + "," + ORGANIZATIONS_COLUMN_PHONE
-                + ") VALUES('Корпорация зла 2','киев борщаговская 334','+380953334598');");
+                + ") VALUES('Корпорация зла 2','Киев Борщаговская 334. Ощад 679','+380953334598');");
 
 
 
+        /*
         db.execSQL("INSERT INTO " + CONTRACTS_WORKS_TABLE_NAME + "(" + CONTRACTS_WORKS_COLUMN_CONTRACT_ID + ","
                 + CONTRACTS_WORKS_COLUMN_WORK_ID +") VALUES(1,1);");
-
 
 
         db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
@@ -245,7 +272,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
                 + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
                 ") VALUES(1,1,'2011-01-07','2014-09-01');");
-
+                */
 
     }
 
@@ -289,7 +316,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CONTRACTS_WORKS_COLUMN_WORK_ID+ " FROM "+CONTRACTS_WORKS_TABLE_NAME+" WHERE "+
                 CONTRACTS_WORKS_COLUMN_CONTRACT_ID+" = "+contractId+");";
 
-        Cursor c1 = sdb.rawQuery(query,null);
+        Cursor c1 = sdb.rawQuery(query, null);
         ArrayList<Work> worksList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
@@ -460,7 +487,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static Responsible selectResponsibleById(String id) {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
         String query="SELECT * FROM "+RESPONSIBLE_TABLE_NAME+" WHERE "+RESPONSIBLE_COLUMN_ID+" = "+id;
-        Cursor c1 = sdb.rawQuery(query,null);
+        Cursor c1 = sdb.rawQuery(query, null);
         ArrayList<Responsible> responsibleList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
@@ -540,7 +567,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
 
        String query="SELECT * FROM "+ORGANIZATIONS_TABLE_NAME+" WHERE "+ORGANIZATIONS_COLUMN_ID+" = "+id;
-        Cursor c1 = sdb.rawQuery(query,null);
+        Cursor c1 = sdb.rawQuery(query, null);
         ArrayList<Organization> organizationsList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
@@ -662,12 +689,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * contracts part
      */
 
-    public static ArrayList<Contract> selectContracts(String sort) {
+    public static ArrayList<Contract> selectContracts(String where) {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
         Cursor c1 = sdb.query(CONTRACTS_TABLE_NAME, new String[]{CONTRACTS_COLUMN_ID, CONTRACTS_COLUMN_RESPONSEID,
-                        CONTRACTS_COLUMN_ORGANIZATIONID,CONTRACTS_COLUMN_INITIAL_DATE,CONTRACTS_COLUMN_FINAL_DATE},
-                null, null,
-                null, null, sort);
+                        CONTRACTS_COLUMN_ORGANIZATIONID, CONTRACTS_COLUMN_PRICE, CONTRACTS_COLUMN_INITIAL_DATE, CONTRACTS_COLUMN_FINAL_DATE},
+                where, null,
+                null, null, null);
         ArrayList<Contract> contractsList = new ArrayList<>();
         if (c1 != null && c1.getCount() != 0) {
             if (c1.moveToFirst()) {
@@ -678,6 +705,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     Responsible resp = selectResponsibleById(contractResponsibleId);
                     String contractInitialDate = c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_INITIAL_DATE));
                     String contractFinalDate = c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_FINAL_DATE));
+                    float contractPrice = c1.getFloat(c1.getColumnIndex(CONTRACTS_COLUMN_PRICE));
 
                     DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                     java.util.Date date = new java.util.Date();
@@ -705,6 +733,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     Contract contract = new Contract(Integer.parseInt(c1.getString(c1.getColumnIndex(CONTRACTS_COLUMN_ID))),
                             resp,org,initialDate,finalDate);
+                    contract.setOriginalPrice(contractPrice);
 
                     contractsList.add(contract);
 
@@ -753,5 +782,76 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sdb.delete(CONTRACTS_WORKS_TABLE_NAME, whereClause, whereArgs);
         sdb.close();
     }
+
+    public static float getPriceOfSparesByWorkId(String workId) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        String query = "SELECT SUM(" + SPARES_COLUMN_PRICE + ") AS spareprice FROM " + SPARES_TABLE_NAME + " WHERE " + SPARES_COLUMN_ID + " IN (SELECT " + WORKS_SPARES_SPARE_ID +
+                " FROM " + WORKS_SPARES_TABLE_NAME + " WHERE " + WORKS_SPARES_WORK_ID + " = " + workId + ") GROUP BY " + SPARES_COLUMN_PRICE + ";";
+        Cursor c1 = sdb.rawQuery(query, null);
+        float sum = 0;
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                    Log.e("spareprice", c1.getString(c1.getColumnIndex("spareprice")));
+                    sum += Float.parseFloat(c1.getString(c1.getColumnIndex("spareprice")));
+
+
+                } while (c1.moveToNext());
+            }
+            c1.close();
+        }
+
+        sdb.close();
+        return sum;
+    }
+
+    public static float getFullPriceOfContract(String contractId) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+
+
+        String whereWorkId = "(SELECT " + CONTRACTS_WORKS_COLUMN_WORK_ID + " FROM " + CONTRACTS_WORKS_TABLE_NAME +
+                " WHERE " + CONTRACTS_WORKS_COLUMN_CONTRACT_ID + " = " + contractId + ")";
+
+
+        String query2 = "SELECT SUM(" + SPARES_COLUMN_PRICE + ") AS spareprice FROM " + SPARES_TABLE_NAME + " WHERE " + SPARES_COLUMN_ID + " IN (SELECT " + WORKS_SPARES_SPARE_ID +
+                " FROM " + WORKS_SPARES_TABLE_NAME + " WHERE " + WORKS_SPARES_WORK_ID + " IN " + whereWorkId + ") GROUP BY " + SPARES_COLUMN_PRICE + ";";
+
+        String query = "SELECT SUM(" + WORKS_COLUMN_PRICE + ") AS workprice FROM " + WORKS_TABLE_NAME + " WHERE " + WORKS_COLUMN_ID +
+                " IN (SELECT " + CONTRACTS_WORKS_COLUMN_WORK_ID +
+                " FROM " + CONTRACTS_WORKS_TABLE_NAME + " WHERE " + CONTRACTS_WORKS_COLUMN_CONTRACT_ID + " = " + contractId + ") GROUP BY "
+                + WORKS_COLUMN_PRICE + ";";
+        Cursor c1 = sdb.rawQuery(query2, null);
+        float sum = 0;
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                    sum += Float.parseFloat(c1.getString(c1.getColumnIndex("spareprice")));
+                } while (c1.moveToNext());
+            }
+            c1.close();
+        }
+
+        c1 = sdb.rawQuery(query, null);
+        if (c1 != null && c1.getCount() != 0) {
+            if (c1.moveToFirst()) {
+                do {
+                    sum += Float.parseFloat(c1.getString(c1.getColumnIndex("workprice")));
+                } while (c1.moveToNext());
+            }
+            c1.close();
+        }
+
+        sdb.close();
+        return sum;
+    }
+
+    public static int updateContract(ContentValues cv, String field, String[] bind) {
+        SQLiteDatabase sdb = sInstance.getWritableDatabase();
+        int result = sdb.update(CONTRACTS_TABLE_NAME, cv, field,
+                bind);
+        sdb.close();
+        return result;
+    }
+
 
 }

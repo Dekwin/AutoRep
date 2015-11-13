@@ -1,7 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".SparesFragment">
+    <item
+        android:id="@+id/contracts_current_period"
+        android:title="Текущие контракты"
+        app:showAsAction="withText|ifRoom" />
+    <item
+        android:id="@+id/contracts_all"
+        android:title="Все контракты"
+        app:showAsAction="withText|ifRoom" />
     <item android:id="@+id/contracts_add" android:title="Add Contract"
         app:showAsAction="withText|ifRoom" />
+
+    <item
+        android:id="@+id/contracts_filter"
+        android:title="Фильтр"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
 
 </menu>

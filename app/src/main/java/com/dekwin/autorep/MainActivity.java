@@ -2,25 +2,25 @@ package com.dekwin.autorep;
 
 import android.app.Activity;
 import android.content.res.Configuration;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 
 import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Work;
+import com.dekwin.autorep.fragments.AddWorksFragment;
 import com.dekwin.autorep.fragments.ContractsFragment;
 import com.dekwin.autorep.fragments.OrganizationsFragment;
 import com.dekwin.autorep.fragments.ResponsibleFragment;
 import com.dekwin.autorep.fragments.SparesFragment;
-import com.dekwin.autorep.fragments.AddWorksFragment;
 import com.dekwin.autorep.fragments.WorksFragment;
 
 import java.util.List;
@@ -130,37 +130,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-
-            getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Toast.makeText(MainActivity.this, "example: "+id, Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-*/
 
     /**
      * A placeholder fragment containing a simple view.

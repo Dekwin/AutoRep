@@ -1,23 +1,18 @@
 package com.dekwin.autorep.fragments;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 
-import com.dekwin.autorep.MainActivity;
-import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.R;
 import com.dekwin.autorep.adapters.ExpandableListAdapter;
+import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Repair;
 import com.dekwin.autorep.entities.Work;
 
@@ -62,32 +57,11 @@ public class AddWorksFragment extends DialogFragment {
             getDialog().setTitle("Выбор работ");
 
         createGroupList();
-
         createCollection();
 
         expListView = (ExpandableListView) rootView.findViewById(R.id.laptop_list);
         final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(getActivity(), groupList, repairCollection);
         expListView.setAdapter(expListAdapter);
-
-        //setGroupIndicatorToRight();
-
-/*
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                Log.e("!!!!","6666");
-                final Work selected = (Work) expListAdapter.getChild(
-                        groupPosition, childPosition);
-
-                Log.e("selected ",selected.getId()+"");
-
-                return true;
-            }
-        });
-*/
-
-        //fragmentIntListener.retArg("inner frag!!");
 
         Button acceptButton = (Button) rootView.findViewById(R.id.works_info_accept_button);
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +85,6 @@ public class AddWorksFragment extends DialogFragment {
                 //getActivity().onBackPressed();
             }
         });
-
-
         return rootView;
 
     }
@@ -124,19 +96,11 @@ public class AddWorksFragment extends DialogFragment {
 
     private void createGroupList() {
         groupList = new ArrayList<>();
-        // groupList.add(new Repair(1,"HP"));
-        //groupList.add(new Repair(2,"Dell"));
-        // groupList.add(new Repair(1,"Lenovo"));
         groupList = DatabaseHelper.selectRepairs(null, null);
-        // groupList.add("Sony");
-        //groupList.add("HCL");
-        //groupList.add("Samsung");
     }
 
     private void createCollection() {
         // preparing laptops collection(child)
-
-
         repairCollection = new LinkedHashMap<>();
 
         // DatabaseHelper.selectRepairs(null,null);
@@ -155,9 +119,5 @@ public class AddWorksFragment extends DialogFragment {
             }
             repairCollection.put(repair.getName(), wrk);
         }
-
-
     }
-
-
 }

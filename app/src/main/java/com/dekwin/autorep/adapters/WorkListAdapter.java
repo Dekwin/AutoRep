@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.dekwin.autorep.R;
-import com.dekwin.autorep.entities.Responsible;
+import com.dekwin.autorep.db.DatabaseHelper;
 import com.dekwin.autorep.entities.Work;
 
 import java.util.ArrayList;
@@ -54,11 +54,16 @@ public class WorkListAdapter extends BaseAdapter{
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.work_info_list_element, null);
+            convertView = inflater.inflate(R.layout.contract_info_element_work_element, null);
 
         }
-        TextView name = (TextView) convertView.findViewById(R.id.work_info_list_element_name);
+        TextView name = (TextView) convertView.findViewById(R.id.contract_info_element_work_element_name);
         name.setText(work.getName());
+
+        TextView sumprice = (TextView) convertView.findViewById(R.id.contract_info_element_work_element_sumprice);
+        float price = DatabaseHelper.getPriceOfSparesByWorkId(work.getId() + "");
+        sumprice.setText((price + work.getPrice()) + "");
+
         Log.e("worklist ","position "+position+" workname "+work.getName());
        // TextView surname = (TextView) convertView.findViewById(R.id.work_info_list_element);
        // surname.setText(work.getSurname());

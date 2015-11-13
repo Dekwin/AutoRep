@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -66,7 +67,7 @@ public class ContractsFragment extends Fragment {
         workPrice=getArguments().getFloat("workPrice");
         Log.e("in notshowmenu ", notShowMenu + " size " + getArguments().size() + " workid " + workId);
 
-        showContracts(getActivity());
+        showContracts(getActivity(), null);
        // setSortHeader(getActivity());
 
 
@@ -98,17 +99,44 @@ public class ContractsFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
+
+        switch (id) {
+            case R.id.contracts_add:
+                setAddContract(getActivity()).show();
+                break;
+
+            case R.id.contracts_current_period:
+                showContracts(getActivity(), DatabaseHelper.CONTRACTS_COLUMN_INITIAL_DATE +
+                        " <= date('now') AND date('now') <= " + DatabaseHelper.CONTRACTS_COLUMN_FINAL_DATE);
+                break;
+
+            case R.id.contracts_all:
+
+                showContracts(getActivity(), null);
+                break;
+
+            case R.id.contracts_filter:
+                // showContracts(getActivity(),null);
+                setFilter();
+                break;
+
+            default:
+
+                break;
+        }
+/*
         if (id == R.id.contracts_add) {
            // setAddSpare(getActivity()).show();
             setAddContract(getActivity()).show();
             return true;
         }
+*/
         return super.onOptionsItemSelected(item);
     }
 
 
-    public void showContracts(final Context ctx) {
-        contractsList = DatabaseHelper.selectContracts(null);
+    public void showContracts(final Context ctx, String where) {
+        contractsList = DatabaseHelper.selectContracts(where);
         contractsListAdapter = new ContractsAdapter(ctx, contractsList);
 
         tbl.setLongClickable(true);
@@ -274,6 +302,15 @@ public class ContractsFragment extends Fragment {
                     }
                 } else Log.e("null point ", " null");
 
+                cvcontract.clear();
+                float contractPrice = DatabaseHelper.getFullPriceOfContract(contract.getId() + "");
+                cvcontract.put(DatabaseHelper.CONTRACTS_COLUMN_PRICE,
+                        contractPrice);
+
+                DatabaseHelper.updateContract(cvcontract, DatabaseHelper.CONTRACTS_COLUMN_ID + " = ?",
+                        new String[]{contract.getId() + ""});
+                contract.setOriginalPrice(contractPrice);
+                // Contract co= DatabaseHelper.getFullPriceOfContract(contract.getId() + "");
                 //    EditText et2 =(EditText)getActivity().findViewById(R.id.editText2);
 
                 contractsList.add(contract);
@@ -395,6 +432,204 @@ public class ContractsFragment extends Fragment {
     }
 
 
+    private void setFilter() {
+
+        // Get the cursor, positioned to the corresponding row in the result set
+
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.contracts_filter, null);
+        builder.setView(dialogView);
+
+        final EditText contractNumber = (EditText) dialogView.findViewById(R.id.contract_filter_contract_number);
+        final EditText surname = (EditText) dialogView.findViewById(R.id.contract_filter_surname);
+        final EditText name = (EditText) dialogView.findViewById(R.id.contract_filter_name);
+        final EditText organizationName = (EditText) dialogView.findViewById(R.id.contract_filter_organization_name);
+        final EditText organizationAccount = (EditText) dialogView.findViewById(R.id.contract_filter_organization_account);
+        final EditText organizationPhone = (EditText) dialogView.findViewById(R.id.contract_filter_organization_phone);
+        final EditText minPrice = (EditText) dialogView.findViewById(R.id.contract_filter_minprice);
+        final EditText maxPrice = (EditText) dialogView.findViewById(R.id.contract_filter_maxprice);
+        final CheckBox match = (CheckBox) dialogView.findViewById(R.id.contract_filter_match_checkbox);
+
+        String query = "";
+        String machStr = "";
+
+        /*
+        if(!match.isChecked()){
+            if (!contractNumber.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_ID+" = "+contractNumber.getText().toString();
+            }
+            if (!surname.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID+" IN (SELECT "+DatabaseHelper.RESPONSIBLE_COLUMN_ID
+                        +" FROM "+DatabaseHelper.RESPONSIBLE_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.RESPONSIBLE_COLUMN_SURNAME+" LIKE '%"+surname.getText().toString()+"%') ";
+            }
+            if(!name.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID+" IN (SELECT "+DatabaseHelper.RESPONSIBLE_COLUMN_ID
+                        +" FROM "+DatabaseHelper.RESPONSIBLE_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.RESPONSIBLE_COLUMN_NAME+" LIKE '%"+name.getText().toString()+"%') ";
+            }
+            if(!organizationName.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID+" IN (SELECT "+DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                        +" FROM "+DatabaseHelper.ORGANIZATIONS_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.ORGANIZATIONS_COLUMN_NAME+" LIKE '%"+organizationName.getText().toString()+"%') ";
+            }
+            if (!organizationAccount.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID+" IN (SELECT "+DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                        +" FROM "+DatabaseHelper.ORGANIZATIONS_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.ORGANIZATIONS_COLUMN_ACCOUNT+" LIKE '%"+organizationAccount.getText().toString()+"%') ";
+            }
+            if(!organizationPhone.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID+" IN (SELECT "+DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                        +" FROM "+DatabaseHelper.ORGANIZATIONS_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.ORGANIZATIONS_COLUMN_PHONE+" LIKE '%"+organizationPhone.getText().toString()+"%') ";
+            }
+            if (!minPrice.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_PRICE+" >= "+minPrice.getText().toString();
+            }
+            if(!maxPrice.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_PRICE+" <= "+maxPrice.getText().toString();
+            }
+        }else {
+            if (!contractNumber.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_ID+" = "+contractNumber.getText().toString();
+            }
+            if (!surname.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID+" IN (SELECT "+DatabaseHelper.RESPONSIBLE_COLUMN_ID
+                        +" FROM "+DatabaseHelper.RESPONSIBLE_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.RESPONSIBLE_COLUMN_SURNAME+" = '"+surname.getText().toString()+"') ";
+            }
+            if(!name.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID+" IN (SELECT "+DatabaseHelper.RESPONSIBLE_COLUMN_ID
+                        +" FROM "+DatabaseHelper.RESPONSIBLE_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.RESPONSIBLE_COLUMN_NAME+" = '"+name.getText().toString()+"') ";
+            }
+            if(!organizationName.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID+" IN (SELECT "+DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                        +" FROM "+DatabaseHelper.ORGANIZATIONS_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.ORGANIZATIONS_COLUMN_NAME+" = '"+organizationName.getText().toString()+"') ";
+            }
+            if (!organizationAccount.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID+" IN (SELECT "+DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                        +" FROM "+DatabaseHelper.ORGANIZATIONS_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.ORGANIZATIONS_COLUMN_ACCOUNT+" = '"+organizationAccount.getText().toString()+"') ";
+            }
+            if(!organizationPhone.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID+" IN (SELECT "+DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                        +" FROM "+DatabaseHelper.ORGANIZATIONS_TABLE_NAME+" WHERE "
+                        +DatabaseHelper.ORGANIZATIONS_COLUMN_PHONE+" = '"+organizationPhone.getText().toString()+"') ";
+            }
+            if (!minPrice.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_PRICE+" >= "+minPrice.getText().toString();
+            }
+            if(!maxPrice.getText().equals("")){
+                query+=" AND "+DatabaseHelper.CONTRACTS_COLUMN_PRICE+" <= "+maxPrice.getText().toString();
+            }
+        }
+*/
+
+
+        builder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                String query = "";
+                //   String machStr="";
+                if (!match.isChecked()) {
+                    if (!contractNumber.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_ID + " = " + contractNumber.getText().toString();
+                    }
+                    if (!surname.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID + " IN (SELECT " + DatabaseHelper.RESPONSIBLE_COLUMN_ID
+                                + " FROM " + DatabaseHelper.RESPONSIBLE_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.RESPONSIBLE_COLUMN_SURNAME + " LIKE '%" + surname.getText().toString() + "%') ";
+                    }
+                    if (!name.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID + " IN (SELECT " + DatabaseHelper.RESPONSIBLE_COLUMN_ID
+                                + " FROM " + DatabaseHelper.RESPONSIBLE_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.RESPONSIBLE_COLUMN_NAME + " LIKE '%" + name.getText().toString() + "%') ";
+                    }
+                    if (!organizationName.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID + " IN (SELECT " + DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                                + " FROM " + DatabaseHelper.ORGANIZATIONS_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.ORGANIZATIONS_COLUMN_NAME + " LIKE '%" + organizationName.getText().toString() + "%') ";
+                    }
+                    if (!organizationAccount.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID + " IN (SELECT " + DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                                + " FROM " + DatabaseHelper.ORGANIZATIONS_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.ORGANIZATIONS_COLUMN_ACCOUNT + " LIKE '%" + organizationAccount.getText().toString() + "%') ";
+                    }
+                    if (!organizationPhone.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID + " IN (SELECT " + DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                                + " FROM " + DatabaseHelper.ORGANIZATIONS_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.ORGANIZATIONS_COLUMN_PHONE + " LIKE '%" + organizationPhone.getText().toString() + "%') ";
+                    }
+                    if (!minPrice.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_PRICE + " >= " + minPrice.getText().toString();
+                    }
+                    if (!maxPrice.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_PRICE + " <= " + maxPrice.getText().toString();
+                    }
+                } else {
+                    if (!contractNumber.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_ID + " = " + contractNumber.getText().toString();
+                    }
+                    if (!surname.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID + " IN (SELECT " + DatabaseHelper.RESPONSIBLE_COLUMN_ID
+                                + " FROM " + DatabaseHelper.RESPONSIBLE_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.RESPONSIBLE_COLUMN_SURNAME + " = '" + surname.getText().toString() + "') ";
+                    }
+                    if (!name.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_RESPONSEID + " IN (SELECT " + DatabaseHelper.RESPONSIBLE_COLUMN_ID
+                                + " FROM " + DatabaseHelper.RESPONSIBLE_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.RESPONSIBLE_COLUMN_NAME + " = '" + name.getText().toString() + "') ";
+                    }
+                    if (!organizationName.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID + " IN (SELECT " + DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                                + " FROM " + DatabaseHelper.ORGANIZATIONS_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.ORGANIZATIONS_COLUMN_NAME + " = '" + organizationName.getText().toString() + "') ";
+                    }
+                    if (!organizationAccount.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID + " IN (SELECT " + DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                                + " FROM " + DatabaseHelper.ORGANIZATIONS_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.ORGANIZATIONS_COLUMN_ACCOUNT + " = '" + organizationAccount.getText().toString() + "') ";
+                    }
+                    if (!organizationPhone.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_ORGANIZATIONID + " IN (SELECT " + DatabaseHelper.ORGANIZATIONS_COLUMN_ID
+                                + " FROM " + DatabaseHelper.ORGANIZATIONS_TABLE_NAME + " WHERE "
+                                + DatabaseHelper.ORGANIZATIONS_COLUMN_PHONE + " = '" + organizationPhone.getText().toString() + "') ";
+                    }
+                    if (!minPrice.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_PRICE + " >= " + minPrice.getText().toString();
+                    }
+                    if (!maxPrice.getText().toString().equals("")) {
+                        query += " AND " + DatabaseHelper.CONTRACTS_COLUMN_PRICE + " <= " + maxPrice.getText().toString();
+                    }
+                }
+
+                query = query.replaceFirst("AND", "");
+
+                Log.e("Query!: ", query + "");
+                showContracts(getActivity(), query);
+
+            }
+        });
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+
+        builder.show();
+
+
+    }
 
 
 }
