@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -33,6 +34,7 @@ import com.dekwin.autorep.entities.Contract;
 import com.dekwin.autorep.entities.Organization;
 import com.dekwin.autorep.entities.Responsible;
 import com.dekwin.autorep.entities.Work;
+import com.dekwin.autorep.tools.DataConverter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -156,7 +158,7 @@ public class ContractsFragment extends Fragment {
             //    builder.setView(dialogView);
 
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -165,7 +167,7 @@ public class ContractsFragment extends Fragment {
                     }
                 });
 
-                builder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+                builder.setNeutralButton("Удалить", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -177,6 +179,21 @@ public class ContractsFragment extends Fragment {
                         contractsListAdapter.notifyDataSetChanged();
                         DatabaseHelper.deleteContractsWorks(DatabaseHelper.CONTRACTS_WORKS_COLUMN_CONTRACT_ID + " = " + cursor.getId(), null);
                         DatabaseHelper.deleteContract(DatabaseHelper.CONTRACTS_COLUMN_ID + " = " + cursor.getId(), null);
+
+                    }
+                });
+
+                builder.setNegativeButton("В файл", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (cursor != null) {
+                            DataConverter.writeToHTML(cursor);
+                            Toast.makeText(ctx,
+                                    "Файл записан по пути: " + Environment.getExternalStorageDirectory().toString()
+                                            + "/AutoReport_" + cursor.getId() + ".html", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
              //   ((EditText) dialogView.findViewById(R.id.editText_spares_name)).setText(cursor.getName());
@@ -255,9 +272,6 @@ public class ContractsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // TODO Auto-generated method stub
-
-
-
 
               //  EditText price = (EditText) ((Dialog) dialog).findViewById(R.id.contracts_add_organization);
 
@@ -351,12 +365,6 @@ public class ContractsFragment extends Fragment {
                     else
                         fr.getDialog().show();
                 }
-//
-                Log.e("trinda", " trinda!!!");
-                //  fragmentManager.beginTransaction()
-                //           .replace(R.id.container, newInstance(1)).addToBackStack(null)
-                //           .commit();
-
 
             }
 

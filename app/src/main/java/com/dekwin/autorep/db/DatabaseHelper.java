@@ -243,36 +243,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-        /*
-        db.execSQL("INSERT INTO " + CONTRACTS_WORKS_TABLE_NAME + "(" + CONTRACTS_WORKS_COLUMN_CONTRACT_ID + ","
-                + CONTRACTS_WORKS_COLUMN_WORK_ID +") VALUES(1,1);");
 
-
-        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
-                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
-                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
-                ") VALUES(1,1,'2007-01-01','2017-02-01');");
-
-        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
-                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
-                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
-                ") VALUES(2,2,'2014-01-01','2015-09-01');");
-
-        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
-                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
-                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
-                ") VALUES(1,2,'2014-01-01','2015-09-01');");
-
-        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
-                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
-                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
-                ") VALUES(1,1,'2011-01-01','2014-09-05');");
-
-        db.execSQL("INSERT INTO " + CONTRACTS_TABLE_NAME + "("
-                + CONTRACTS_COLUMN_RESPONSEID + "," + CONTRACTS_COLUMN_ORGANIZATIONID +","
-                + CONTRACTS_COLUMN_INITIAL_DATE+","+CONTRACTS_COLUMN_FINAL_DATE+
-                ") VALUES(1,1,'2011-01-07','2014-09-01');");
-                */
 
     }
 
@@ -383,7 +354,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static ArrayList<Spare> selectSpares(String sort, int workId) {
         SQLiteDatabase sdb = sInstance.getWritableDatabase();
-        Cursor c1 = null;
+        Cursor c1;
 
         if (workId != 0) {
             String srt = "";
